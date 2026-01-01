@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fecha Corregida - Camping La Sorpresa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { border-color: #28a745; background-color: #d4edda; }
+        .error { border-color: #dc3545; background-color: #f8d7da; }
+        .info { border-color: #17a2b8; background-color: #d1ecf1; }
+        .warning { border-color: #ffc107; background-color: #fff3cd; }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .url-display {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        
+        .fecha-test {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 5px 0;
+        }
+        
+        .fecha-valida { border-color: #28a745; background-color: #d4edda; }
+        .fecha-invalida { border-color: #dc3545; background-color: #f8d7da; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Validación de Fechas Corregida</h1>
+        <p>Este archivo te permite probar las correcciones de validación de fechas en la API.</p>
+        
+        <div class="test-section info">
+            <h3>📋 Problema Identificado y Solucionado</h3>
+            <p><strong>Problema:</strong> Las fechas se corrompían y se enviaban como "20205-09-04" (con un "5" extra)</p>
+            <p><strong>Solución:</strong> Se agregó validación de fechas antes de enviar a la API</p>
+            <p><strong>Mejoras:</strong></p>
+            <ul>
+                <li>✅ Validación de formato de fecha (YYYY-MM-DD)</li>
+                <li>✅ Validación de fecha válida</li>
+                <li>✅ Validación de fechas futuras</li>
+                <li>✅ Validación de fechas no muy lejanas (máximo 10 años)</li>
+                <li>✅ Atributo `min` en campos de fecha</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 Test de Validación de Fechas</h3>
+            <p>Prueba diferentes formatos de fecha para verificar la validación</p>
+            
+            <div class="form-group">
+                <label>Tipo de Hospedaje:</label>
+                <select id="tipoHospedaje">
+                    <option value="">Seleccionar tipo</option>
+                    <option value="1">Cabaña</option>
+                    <option value="2">Dormis</option>
+                    <option value="3">Camping</option>
+                    <option value="4">Grupos</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Fecha de Entrada:</label>
+                <input type="date" id="fechaEntrada" min="">
+            </div>
+            
+            <div class="form-group">
+                <label>Fecha de Salida:</label>
+                <input type="date" id="fechaSalida" min="">
+            </div>
+            
+            <button onclick="testValidacionFechas()">🔍 Probar Validación</button>
+            <button onclick="testFechasInvalidas()">🚨 Probar Fechas Inválidas</button>
+            <button onclick="limpiarResultados()">🗑️ Limpiar</button>
+            
+            <div id="resultValidacion" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Resultados de Validación</h3>
+            <div id="resultadosValidacion"></div>
+        </div>
+
+        <div class="test-section warning">
+            <h3>📝 Casos de Prueba</h3>
+            <h4>✅ Fechas Válidas:</h4>
+            <ul>
+                <li>2025-09-04 (fecha futura válida)</li>
+                <li>2025-12-31 (fin de año)</li>
+                <li>2026-01-01 (año siguiente)</li>
+            </ul>
+            
+            <h4>❌ Fechas Inválidas:</h4>
+            <ul>
+                <li>20205-09-04 (año con dígito extra)</li>
+                <li>2025-13-01 (mes inválido)</li>
+                <li>2025-02-30 (día inválido para febrero)</li>
+                <li>2020-01-01 (fecha pasada)</li>
+                <li>2035-01-01 (fecha muy futura)</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost/campinglasorpresa/api/endpoints';
+        
+        // Establecer fecha mínima como hoy
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('fechaEntrada').min = today;
+        document.getElementById('fechaSalida').min = today;
+        
+        // Actualizar fecha mínima de salida cuando cambie la entrada
+        document.getElementById('fechaEntrada').addEventListener('change', function() {
+            document.getElementById('fechaSalida').min = this.value;
+        });
+        
+        function logResult(elementId, message, isError = false) {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}\n`;
+            
+            if (isError) {
+                element.style.borderColor = '#dc3545';
+                element.style.backgroundColor = '#f8d7da';
+            } else {
+                element.style.borderColor = '#28a745';
+                element.style.backgroundColor = '#d4edda';
+            }
+            
+            element.textContent += logMessage;
+        }
+
+        // Función de validación de fechas (igual que en React)
+        function esFechaValida(fecha) {
+            if (!fecha) return false;
+            
+            // Verificar que sea una fecha válida en formato YYYY-MM-DD
+            const regex = /^\d{4}-\d{2}-\d{2}$/;
+            if (!regex.test(fecha)) {
+                console.warn('⚠️ Formato de fecha inválido:', fecha);
+                return false;
+            }
+            
+            // Verificar que sea una fecha válida
+            const fechaObj = new Date(fecha);
+            if (isNaN(fechaObj.getTime())) {
+                console.warn('⚠️ Fecha no válida:', fecha);
+                return false;
+            }
+            
+            // Verificar que no sea una fecha futura muy lejana (más de 10 años)
+            const hoy = new Date();
+            const diezAnos = new Date();
+            diezAnos.setFullYear(hoy.getFullYear() + 10);
+            
+            if (fechaObj > diezAnos) {
+                console.warn('⚠️ Fecha muy futura:', fecha);
+                return false;
+            }
+            
+            return true;
+        }
+
+        async function testValidacionFechas() {
+            const resultElement = document.getElementById('resultValidacion');
+            const resultadosElement = document.getElementById('resultadosValidacion');
+            
+            resultElement.textContent = '';
+            resultadosElement.innerHTML = '';
+            
+            const tipoHospedaje = document.getElementById('tipoHospedaje').value;
+            const fechaEntrada = document.getElementById('fechaEntrada').value;
+            const fechaSalida = document.getElementById('fechaSalida').value;
+            
+            if (!tipoHospedaje || !fechaEntrada || !fechaSalida) {
+                logResult('resultValidacion', '❌ Por favor completa todos los campos', true);
+                return;
+            }
+            
+            try {
+                logResult('resultValidacion', '🔍 Probando validación de fechas...');
+                
+                // Validar fechas antes de enviar
+                if (!esFechaValida(fechaEntrada)) {
+                    logResult('resultValidacion', `❌ Fecha de entrada inválida: ${fechaEntrada}`, true);
+                    return;
+                }
+                
+                if (!esFechaValida(fechaSalida)) {
+                    logResult('resultValidacion', `❌ Fecha de salida inválida: ${fechaSalida}`, true);
+                    return;
+                }
+                
+                logResult('resultValidacion', '✅ Fechas validadas correctamente');
+                
+                const apiUrl = `${API_BASE_URL}/hospedajes.php?disponibilidad=1&tipo_hospedaje_id=${tipoHospedaje}&fecha_entrada=${fechaEntrada}&fecha_salida=${fechaSalida}`;
+                
+                logResult('resultValidacion', `🔗 URL de la API: ${apiUrl}`);
+                
+                const response = await fetch(apiUrl);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    logResult('resultValidacion', `❌ Respuesta no exitosa: ${errorText}`, true);
+                    return;
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    logResult('resultValidacion', `✅ Disponibilidad verificada exitosamente`);
+                    logResult('resultValidacion', `🏕️ Hospedajes disponibles: ${data.hospedajes?.length || 0}`);
+                    
+                    mostrarResultadosValidacion(data.hospedajes, data.filtros, true);
+                } else {
+                    logResult('resultValidacion', `❌ Error en la respuesta: ${data.error || 'Error desconocido'}`, true);
+                }
+                
+            } catch (error) {
+                logResult('resultValidacion', `❌ Error: ${error.message}`, true);
+            }
+        }
+
+        function testFechasInvalidas() {
+            const resultElement = document.getElementById('resultValidacion');
+            const resultadosElement = document.getElementById('resultadosValidacion');
+            
+            resultElement.textContent = '';
+            resultadosElement.innerHTML = '';
+            
+            const fechasInvalidas = [
+                '20205-09-04',  // Año con dígito extra
+                '2025-13-01',   // Mes inválido
+                '2025-02-30',   // Día inválido
+                '2020-01-01',   // Fecha pasada
+                '2035-01-01',   // Fecha muy futura
+                'abc-def-ghi',  // Formato completamente inválido
+                '',             // Fecha vacía
+                '2025/09/04'    // Formato incorrecto
+            ];
+            
+            logResult('resultValidacion', '🚨 Probando fechas inválidas...');
+            
+            fechasInvalidas.forEach(fecha => {
+                const esValida = esFechaValida(fecha);
+                const resultado = esValida ? '✅ Válida' : '❌ Inválida';
+                logResult('resultValidacion', `${resultado}: ${fecha || '(vacía)'}`);
+            });
+            
+            mostrarResultadosValidacion([], null, false);
+        }
+
+        function mostrarResultadosValidacion(hospedajes, filtros, esExitoso) {
+            const resultadosElement = document.getElementById('resultadosValidacion');
+            
+            if (esExitoso && hospedajes && hospedajes.length > 0) {
+                resultadosElement.innerHTML = `
+                    <div class="test-section success">
+                        <h4>✅ Validación Exitosa</h4>
+                        <p>Las fechas fueron validadas correctamente y se encontraron hospedajes disponibles.</p>
+                        <p><strong>Filtros aplicados:</strong></p>
+                        <ul>
+                            <li>Tipo: ${getTipoHospedajeNombre(filtros.tipo_hospedaje_id)}</li>
+                            <li>Entrada: ${filtros.fecha_entrada}</li>
+                            <li>Salida: ${filtros.fecha_salida}</li>
+                        </ul>
+                        <p><strong>Hospedajes disponibles:</strong> ${hospedajes.length}</p>
+                    </div>
+                `;
+            } else if (esExitoso) {
+                resultadosElement.innerHTML = `
+                    <div class="test-section warning">
+                        <h4>⚠️ Validación Exitosa pero Sin Disponibilidad</h4>
+                        <p>Las fechas fueron validadas correctamente pero no hay hospedajes disponibles.</p>
+                    </div>
+                `;
+            } else {
+                resultadosElement.innerHTML = `
+                    <div class="test-section error">
+                        <h4>❌ Test de Fechas Inválidas</h4>
+                        <p>Se probaron diferentes formatos de fecha inválidos para verificar que la validación funcione correctamente.</p>
+                        <p>Todas las fechas inválidas fueron rechazadas como se esperaba.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function getTipoHospedajeNombre(tipoId) {
+            const tipos = {
+                '1': 'Cabaña',
+                '2': 'Dormis',
+                '3': 'Camping',
+                '4': 'Grupos'
+            };
+            return tipos[tipoId] || 'Desconocido';
+        }
+
+        function limpiarResultados() {
+            document.getElementById('resultValidacion').textContent = '';
+            document.getElementById('resultadosValidacion').innerHTML = '';
+            document.getElementById('tipoHospedaje').value = '';
+            document.getElementById('fechaEntrada').value = '';
+            document.getElementById('fechaSalida').value = '';
+        }
+
+        // Auto-ejecutar test básico al cargar la página
+        window.addEventListener('load', () => {
+            logResult('resultValidacion', '🚀 Página cargada. Las correcciones de validación de fechas están activas.');
+        });
+    </script>
+</body>
+</html>

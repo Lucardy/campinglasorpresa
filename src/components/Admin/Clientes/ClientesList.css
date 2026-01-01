@@ -1,0 +1,669 @@
+.clientes-list {
+  padding: 20px;
+}
+
+.clientes-list h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.clientes-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.clientes-table th,
+.clientes-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.clientes-table th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  color: #333;
+}
+
+.clientes-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.cliente-row {
+    transition: background-color 0.2s ease;
+}
+
+.cliente-row:hover {
+    background-color: #f0f9ff !important;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.action-buttons button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+}
+
+.action-buttons button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.clientes-table .actions {
+  display: flex;
+  gap: 10px;
+}
+
+.clientes-table button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.clientes-table .edit-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.clientes-table .delete-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.clientes-table button:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .clientes-table {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .clientes-table th,
+  .clientes-table td {
+    padding: 8px;
+  }
+  
+  .clientes-table .actions {
+    flex-direction: column;
+    gap: 5px;
+  }
+}
+
+.clientes-section {
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.section-header {
+    margin-bottom: 20px;
+}
+
+.section-header h2 {
+    margin: 0 0 15px 0;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.filters-container {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.btn-add {
+    padding: 8px 16px;
+    background: #10b981;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-add:hover {
+    background: #059669;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-container {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px 12px;
+    padding-left: 2.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 0.75rem center;
+    background-size: 1.25rem;
+    transition: all 0.2s ease;
+}
+
+.search-input:hover {
+    border-color: #94a3b8;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.searching-indicator {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    font-size: 0.75rem;
+    font-style: italic;
+    pointer-events: none;
+}
+
+/* Vista de escritorio */
+.table-container {
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+.clientes-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.clientes-table th,
+.clientes-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.clientes-table th {
+    background: #f5f5f5;
+    font-weight: 600;
+    color: #333;
+}
+
+.sortable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.sortable:hover {
+    background: #eee;
+}
+
+.btn-delete {
+    padding: 6px 12px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-delete:hover {
+    background: #c82333;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.pagination-btn {
+    padding: 8px 16px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.pagination-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.pagination-info {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Vista móvil */
+.mobile-clientes {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.cliente-card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.cliente-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.cliente-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.dni-badge {
+    background: #e9ecef;
+    color: #495057;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.cliente-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+}
+
+.detail-row .label {
+    color: #666;
+    font-weight: 500;
+}
+
+.detail-row .value {
+    color: #333;
+}
+
+.cliente-actions {
+    margin-top: 12px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.view-more {
+    text-align: center;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.view-more p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
+/* Media queries */
+@media (max-width: 768px) {
+    .clientes-section {
+        padding: 15px;
+    }
+
+    .section-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .filters-container {
+        flex-direction: column;
+    }
+
+    .search-container {
+        width: 100%;
+    }
+
+    .search-input {
+        padding: 0.625rem 0.875rem;
+        padding-left: 2.25rem;
+        background-size: 1rem;
+        background-position: 0.625rem center;
+        font-size: 0.875rem;
+    }
+
+    .cliente-card {
+        padding: 12px;
+    }
+
+    .cliente-header h3 {
+        font-size: 15px;
+    }
+
+    .detail-row {
+        font-size: 13px;
+    }
+
+    .btn-delete {
+        padding: 4px 8px;
+        font-size: 13px;
+    }
+}
+
+/* Estilos para edición en línea */
+.edit-input {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background: #fff;
+}
+
+.edit-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn-view {
+    padding: 6px 12px;
+    background: #17a2b8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-view:hover {
+    background: #138496;
+}
+
+.btn-edit {
+    padding: 6px 12px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-edit:hover {
+    background: #218838;
+}
+
+.btn-save {
+    padding: 6px 12px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-save:hover {
+    background: #0056b3;
+}
+
+.btn-cancel {
+    padding: 6px 12px;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-cancel:hover {
+    background: #545b62;
+}
+
+.btn-delete {
+    padding: 6px 12px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-delete:hover {
+    background: #c82333;
+}
+
+/* Estilos para vista móvil */
+.cliente-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.cliente-actions button {
+    flex: 1;
+    min-width: 80px;
+    padding: 8px 12px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.cliente-actions .btn-view {
+    background: #17a2b8;
+}
+
+.cliente-actions .btn-view:hover {
+    background: #138496;
+}
+
+/* Responsive para botones de acción */
+@media (max-width: 768px) {
+    .action-buttons {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .action-buttons button {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .cliente-actions {
+        flex-direction: column;
+    }
+    
+    .cliente-actions button {
+        width: 100%;
+    }
+
+    /* Estilos para el formulario de edición móvil */
+    .mobile-edit-form {
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-top: 10px;
+        border: 1px solid #e9ecef;
+    }
+
+    .edit-header {
+        margin-bottom: 15px;
+        text-align: center;
+    }
+
+    .edit-header h3 {
+        margin: 0;
+        color: #333;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .edit-fields {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .edit-field {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .edit-field label {
+        font-weight: 500;
+        color: #555;
+        font-size: 0.9rem;
+    }
+
+    .mobile-edit-input {
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        background: white;
+        transition: all 0.2s ease;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .mobile-edit-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .edit-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .edit-actions button {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .edit-actions .btn-save {
+        background: #10b981;
+        color: white;
+    }
+
+    .edit-actions .btn-save:hover {
+        background: #059669;
+        transform: translateY(-1px);
+    }
+
+    .edit-actions .btn-cancel {
+        background: #6b7280;
+        color: white;
+    }
+
+    .edit-actions .btn-cancel:hover {
+        background: #4b5563;
+        transform: translateY(-1px);
+    }
+} 
+
+.button-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.btn-refresh {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.btn-refresh:hover {
+    background-color: #45a049;
+}
+
+.btn-refresh:active {
+    transform: translateY(1px);
+} 

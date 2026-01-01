@@ -1,0 +1,43 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://campinglasorpresa.com/sitemap.xml
+
+# Crawl-delay para ser respetuoso con el servidor
+Crawl-delay: 1
+
+# Permitir acceso a recursos importantes
+Allow: /logo.jpeg
+Allow: /manifest.json
+Allow: /sw.js
+
+# Bloquear archivos innecesarios
+Disallow: /api/
+Disallow: /admin/
+Disallow: /node_modules/
+Disallow: /.env
+Disallow: /package.json
+Disallow: /package-lock.json
+Disallow: /vite.config.js
+Disallow: /eslint.config.js
+
+# Específico para Google
+User-agent: Googlebot
+Allow: /
+
+# Específico para Bing
+User-agent: Bingbot
+Allow: /
+
+# Específico para Facebook
+User-agent: facebookexternalhit
+Allow: /
+
+# Específico para Twitter
+User-agent: Twitterbot
+Allow: /
+
+# Específico para WhatsApp
+User-agent: WhatsApp
+Allow: / 

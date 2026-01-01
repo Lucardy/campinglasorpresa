@@ -1,0 +1,149 @@
+.camping-page {
+  padding: 2rem 4rem;
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
+  margin-top: 80px;
+}
+
+.camping-title {
+  text-align: center;
+  color: #3d4e22;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.camping-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background-color: #a3c86d;
+  border-radius: 2px;
+}
+
+.camping-container {
+  margin: 2rem 0;
+}
+
+.camping-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2.5rem;
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.camping-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.camping-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-bottom: 2px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.card-header h3 {
+  color: #3d4e22;
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.card-icon {
+  color: #a3c86d;
+  font-size: 1.8rem;
+}
+
+.card-content {
+  padding: 1.5rem;
+}
+
+.servicios-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.servicio-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.servicio-item:last-child {
+  border-bottom: none;
+}
+
+.servicio-item .icono-servicio {
+  color: #a3c86d;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+}
+
+.servicio-item span {
+  color: #495057;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.servicio-item.highlight {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.servicio-item.highlight span {
+  font-style: italic;
+  color: #6c757d;
+}
+
+@media (max-width: 1200px) {
+  .camping-page {
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .camping-page {
+    padding: 1rem;
+  }
+
+  .camping-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .camping-title {
+    font-size: 2rem;
+  }
+
+  .card-header {
+    padding: 1rem;
+  }
+
+  .card-content {
+    padding: 1rem;
+  }
+} 

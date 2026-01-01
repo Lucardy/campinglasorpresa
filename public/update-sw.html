@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualizar Service Worker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Actualizar Service Worker</h1>
+        <p>Esta página te ayudará a forzar la actualización del Service Worker para solucionar problemas de caché.</p>
+        
+        <button onclick="forceUpdate()">🔄 Forzar Actualización</button>
+        <button onclick="clearLog()">🗑️ Limpiar Log</button>
+        <button onclick="goHome()">🏠 Ir al Inicio</button>
+        
+        <div id="log" class="log">
+            <div>📋 Log de actualización aparecerá aquí...</div>
+        </div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('log').innerHTML = '<div>📋 Log limpiado...</div>';
+        }
+
+        function goHome() {
+            window.location.href = '/';
+        }
+
+        function forceUpdate() {
+            log('🔄 Iniciando actualización forzada del Service Worker...');
+            
+            if ('serviceWorker' in navigator) {
+                log('✅ Service Worker soportado');
+                
+                // Desregistrar todos los Service Workers
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    log(`📋 Encontrados ${registrations.length} Service Worker(s)`);
+                    
+                    const unregisterPromises = registrations.map(function(registration) {
+                        log(`🗑️ Desregistrando: ${registration.scope}`);
+                        return registration.unregister();
+                    });
+                    
+                    return Promise.all(unregisterPromises);
+                }).then(function() {
+                    log('✅ Todos los Service Workers desregistrados');
+                    
+                    // Limpiar todos los caches
+                    if ('caches' in window) {
+                        return caches.keys().then(function(cacheNames) {
+                            log(`📋 Encontrados ${cacheNames.length} cache(s)`);
+                            
+                            const deletePromises = cacheNames.map(function(cacheName) {
+                                log(`🗑️ Eliminando cache: ${cacheName}`);
+                                return caches.delete(cacheName);
+                            });
+                            
+                            return Promise.all(deletePromises);
+                        });
+                    }
+                }).then(function() {
+                    log('✅ Todos los caches eliminados');
+                    log('🔄 Recargando página en 3 segundos...');
+                    
+                    setTimeout(function() {
+                        window.location.reload(true);
+                    }, 3000);
+                }).catch(function(error) {
+                    log(`❌ Error: ${error.message}`);
+                });
+            } else {
+                log('❌ Service Worker no soportado en este navegador');
+            }
+        }
+
+        // Auto-ejecutar si hay parámetro en la URL
+        if (window.location.search.includes('auto=1')) {
+            setTimeout(forceUpdate, 1000);
+        }
+    </script>
+</body>
+</html>

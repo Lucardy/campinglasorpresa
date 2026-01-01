@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Disponibilidad Corregida - Camping La Sorpresa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { border-color: #28a745; background-color: #d4edda; }
+        .error { border-color: #dc3545; background-color: #f8d7da; }
+        .info { border-color: #17a2b8; background-color: #d1ecf1; }
+        .warning { border-color: #ffc107; background-color: #fff3cd; }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #6c757d; cursor: not-allowed; }
+        
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .reserva-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 5px 0;
+        }
+        
+        .reserva-activa { border-color: #28a745; background-color: #d4edda; }
+        .reserva-confirmada { border-color: #17a2b8; background-color: #d1ecf1; }
+        .reserva-cancelada { border-color: #dc3545; background-color: #f8d7da; }
+        
+        .test-scenario {
+            background: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        .scenario-title {
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+        
+        .step {
+            margin: 5px 0;
+            padding: 5px 10px;
+            background: white;
+            border-radius: 3px;
+            border-left: 3px solid #007bff;
+        }
+        
+        .step-success { border-left-color: #28a745; }
+        .step-error { border-left-color: #dc3545; }
+        .step-warning { border-left-color: #ffc107; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Disponibilidad Corregida</h1>
+        <p>Este archivo te permite probar las correcciones de disponibilidad para evitar reservas duplicadas.</p>
+        
+        <div class="test-section info">
+            <h3>📋 Problema Identificado y Solucionado</h3>
+            <p><strong>Problema:</strong> Se podían crear reservas duplicadas en el mismo hospedaje y fechas</p>
+            <p><strong>Causa:</strong> El backend solo verificaba reservas con estado 'activa', pero el frontend creaba reservas con estado 'confirmada'</p>
+            <p><strong>Solución:</strong> Se actualizó el backend para verificar ambos estados: 'activa' y 'confirmada'</p>
+            <p><strong>Archivos corregidos:</strong></p>
+            <ul>
+                <li>✅ <code>api/models/Reserva.php</code> - Método <code>checkAvailability</code></li>
+                <li>✅ <code>api/models/Hospedaje.php</code> - Métodos <code>checkDisponibilidad</code> y <code>getHospedajesDisponibles</code></li>
+                <li>✅ <code>src/components/Admin/ReservaRapida/ReservaRapida.jsx</code> - Verificación final antes de crear reserva</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 Test de Disponibilidad</h3>
+            <p>Prueba la verificación de disponibilidad con diferentes escenarios</p>
+            
+            <div class="form-group">
+                <label>Tipo de Hospedaje:</label>
+                <select id="tipoHospedaje">
+                    <option value="">Seleccionar tipo</option>
+                    <option value="1">Cabaña</option>
+                    <option value="2">Dormis</option>
+                    <option value="3">Camping</option>
+                    <option value="4">Grupos</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Fecha de Entrada:</label>
+                <input type="date" id="fechaEntrada" min="">
+            </div>
+            
+            <div class="form-group">
+                <label>Fecha de Salida:</label>
+                <input type="date" id="fechaSalida" min="">
+            </div>
+            
+            <button onclick="verificarDisponibilidad()">🔍 Verificar Disponibilidad</button>
+            <button onclick="verReservasExistentes()">📋 Ver Reservas Existentes</button>
+            <button onclick="limpiarResultados()">🗑️ Limpiar</button>
+            
+            <div id="resultDisponibilidad" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Reservas Existentes</h3>
+            <div id="reservasExistentes"></div>
+        </div>
+
+        <div class="test-section warning">
+            <h3>🧪 Escenarios de Prueba</h3>
+            
+            <div class="test-scenario">
+                <div class="scenario-title">Escenario 1: Reserva Normal</div>
+                <div class="step">1. Selecciona un tipo de hospedaje</div>
+                <div class="step">2. Ingresa fechas válidas</div>
+                <div class="step">3. Verifica disponibilidad</div>
+                <div class="step">4. Debería mostrar hospedajes disponibles</div>
+            </div>
+            
+            <div class="test-scenario">
+                <div class="scenario-title">Escenario 2: Reserva Duplicada</div>
+                <div class="step">1. Crea una reserva en la aplicación React</div>
+                <div class="step">2. Intenta crear otra reserva en las mismas fechas</div>
+                <div class="step">3. Debería mostrar error de disponibilidad</div>
+                <div class="step">4. El hospedaje no debería aparecer en la lista de disponibles</div>
+            </div>
+            
+            <div class="test-scenario">
+                <div class="scenario-title">Escenario 3: Verificación de Estados</div>
+                <div class="step">1. Verifica que las reservas con estado 'confirmada' se consideren ocupadas</div>
+                <div class="step">2. Verifica que las reservas con estado 'activa' se consideren ocupadas</div>
+                <div class="step">3. Verifica que las reservas canceladas no afecten la disponibilidad</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost/campinglasorpresa/api/endpoints';
+        
+        // Establecer fecha mínima como hoy
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('fechaEntrada').min = today;
+        document.getElementById('fechaSalida').min = today;
+        
+        // Actualizar fecha mínima de salida cuando cambie la entrada
+        document.getElementById('fechaEntrada').addEventListener('change', function() {
+            document.getElementById('fechaSalida').min = this.value;
+        });
+        
+        function logResult(elementId, message, isError = false) {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}\n`;
+            
+            if (isError) {
+                element.style.borderColor = '#dc3545';
+                element.style.backgroundColor = '#f8d7da';
+            } else {
+                element.style.borderColor = '#28a745';
+                element.style.backgroundColor = '#d4edda';
+            }
+            
+            element.textContent += logMessage;
+        }
+
+        async function verificarDisponibilidad() {
+            const resultElement = document.getElementById('resultDisponibilidad');
+            resultElement.textContent = '';
+            
+            const tipoHospedaje = document.getElementById('tipoHospedaje').value;
+            const fechaEntrada = document.getElementById('fechaEntrada').value;
+            const fechaSalida = document.getElementById('fechaSalida').value;
+            
+            if (!tipoHospedaje || !fechaEntrada || !fechaSalida) {
+                logResult('resultDisponibilidad', '❌ Por favor completa todos los campos', true);
+                return;
+            }
+            
+            try {
+                logResult('resultDisponibilidad', '🔍 Verificando disponibilidad...');
+                
+                const apiUrl = `${API_BASE_URL}/hospedajes.php?disponibilidad=1&tipo_hospedaje_id=${tipoHospedaje}&fecha_entrada=${fechaEntrada}&fecha_salida=${fechaSalida}`;
+                
+                logResult('resultDisponibilidad', `🔗 URL de la API: ${apiUrl}`);
+                
+                const response = await fetch(apiUrl);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    logResult('resultDisponibilidad', `❌ Respuesta no exitosa: ${errorText}`, true);
+                    return;
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    logResult('resultDisponibilidad', `✅ Disponibilidad verificada exitosamente`);
+                    logResult('resultDisponibilidad', `🏕️ Hospedajes disponibles: ${data.hospedajes?.length || 0}`);
+                    
+                    if (data.hospedajes && data.hospedajes.length > 0) {
+                        data.hospedajes.forEach(hospedaje => {
+                            logResult('resultDisponibilidad', `  - ${hospedaje.numero} (Cap: ${hospedaje.capacidad})`);
+                        });
+                    } else {
+                        logResult('resultDisponibilidad', `⚠️ No hay hospedajes disponibles para las fechas seleccionadas`);
+                    }
+                } else {
+                    logResult('resultDisponibilidad', `❌ Error en la respuesta: ${data.error || 'Error desconocido'}`, true);
+                }
+                
+            } catch (error) {
+                logResult('resultDisponibilidad', `❌ Error: ${error.message}`, true);
+            }
+        }
+
+        async function verReservasExistentes() {
+            const resultElement = document.getElementById('reservasExistentes');
+            resultElement.innerHTML = '';
+            
+            try {
+                logResult('resultDisponibilidad', '📋 Obteniendo reservas existentes...');
+                
+                const response = await fetch(`${API_BASE_URL}/reservas.php`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const reservas = data.reservas || [];
+                    logResult('resultDisponibilidad', `✅ Se encontraron ${reservas.length} reservas`);
+                    
+                    if (reservas.length > 0) {
+                        resultElement.innerHTML = '<h4>📋 Reservas Existentes:</h4>';
+                        
+                        reservas.forEach(reserva => {
+                            const estadoClass = getEstadoClass(reserva.estado);
+                            const fechaEntrada = new Date(reserva.fecha_entrada).toLocaleDateString();
+                            const fechaSalida = new Date(reserva.fecha_salida).toLocaleDateString();
+                            
+                            resultElement.innerHTML += `
+                                <div class="reserva-item ${estadoClass}">
+                                    <strong>Reserva #${reserva.id}</strong> - ${reserva.nombre} ${reserva.apellido}<br>
+                                    <strong>Hospedaje:</strong> ${reserva.numero_hospedaje || 'Camping'}<br>
+                                    <strong>Fechas:</strong> ${fechaEntrada} - ${fechaSalida}<br>
+                                    <strong>Estado:</strong> ${reserva.estado}<br>
+                                    <strong>Personas:</strong> ${reserva.cantidad_personas}<br>
+                                    <strong>Monto:</strong> $${reserva.monto_total}
+                                </div>
+                            `;
+                        });
+                    } else {
+                        resultElement.innerHTML = '<p>No hay reservas existentes.</p>';
+                    }
+                } else {
+                    logResult('resultDisponibilidad', `❌ Error al obtener reservas: ${data.error || 'Error desconocido'}`, true);
+                }
+                
+            } catch (error) {
+                logResult('resultDisponibilidad', `❌ Error: ${error.message}`, true);
+            }
+        }
+
+        function getEstadoClass(estado) {
+            switch (estado) {
+                case 'activa': return 'reserva-activa';
+                case 'confirmada': return 'reserva-confirmada';
+                case 'cancelada': return 'reserva-cancelada';
+                default: return '';
+            }
+        }
+
+        function limpiarResultados() {
+            document.getElementById('resultDisponibilidad').textContent = '';
+            document.getElementById('reservasExistentes').innerHTML = '';
+            document.getElementById('tipoHospedaje').value = '';
+            document.getElementById('fechaEntrada').value = '';
+            document.getElementById('fechaSalida').value = '';
+        }
+
+        // Auto-ejecutar al cargar la página
+        window.addEventListener('load', () => {
+            logResult('resultDisponibilidad', '🚀 Página cargada. Las correcciones de disponibilidad están activas.');
+            logResult('resultDisponibilidad', '💡 Prueba creando una reserva en la aplicación React y luego verificando disponibilidad aquí.');
+        });
+    </script>
+</body>
+</html>

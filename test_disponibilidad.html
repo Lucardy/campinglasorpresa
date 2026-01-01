@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Disponibilidad - Camping La Sorpresa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { border-color: #28a745; background-color: #d4edda; }
+        .error { border-color: #dc3545; background-color: #f8d7da; }
+        .info { border-color: #17a2b8; background-color: #d1ecf1; }
+        .warning { border-color: #ffc107; background-color: #fff3cd; }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .url-display {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        
+        .hospedaje-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 5px 0;
+        }
+        
+        .hospedaje-numero {
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        .hospedaje-capacidad {
+            color: #28a745;
+        }
+        
+        .hospedaje-tipo {
+            color: #6c757d;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Disponibilidad de Hospedajes</h1>
+        <p>Este archivo te permite probar la verificación de disponibilidad de hospedajes en tu entorno local de XAMPP.</p>
+        
+        <div class="test-section info">
+            <h3>📋 Información del Entorno</h3>
+            <div class="url-display">
+                <strong>URL de la API:</strong> http://localhost/campinglasorpresa/api/endpoints/hospedajes.php
+            </div>
+            <p><strong>Ubicación esperada:</strong> C:\xampp\htdocs\campinglasorpresa\api\</p>
+            <p><strong>Puerto XAMPP:</strong> 80 (http://localhost)</p>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 Test de Disponibilidad</h3>
+            <p>Selecciona un tipo de hospedaje y fechas para verificar disponibilidad</p>
+            
+            <div class="form-group">
+                <label>Tipo de Hospedaje:</label>
+                <select id="tipoHospedaje">
+                    <option value="">Seleccionar tipo</option>
+                    <option value="1">Cabaña</option>
+                    <option value="2">Dormis</option>
+                    <option value="3">Camping</option>
+                    <option value="4">Grupos</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Fecha de Entrada:</label>
+                <input type="date" id="fechaEntrada" min="">
+            </div>
+            
+            <div class="form-group">
+                <label>Fecha de Salida:</label>
+                <input type="date" id="fechaSalida" min="">
+            </div>
+            
+            <button onclick="testDisponibilidad()">🔍 Verificar Disponibilidad</button>
+            <button onclick="limpiarResultados()">🗑️ Limpiar</button>
+            
+            <div id="resultDisponibilidad" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Resultados de Disponibilidad</h3>
+            <div id="resultadosDisponibilidad"></div>
+        </div>
+
+        <div class="test-section warning">
+            <h3>📝 Instrucciones</h3>
+            <ol>
+                <li><strong>Selecciona un tipo de hospedaje</strong> (Cabaña, Dormis, Camping, Grupos)</li>
+                <li><strong>Ingresa fechas de entrada y salida</strong> (deben ser futuras)</li>
+                <li><strong>Haz clic en "Verificar Disponibilidad"</strong></li>
+                <li><strong>Revisa los resultados</strong> para ver qué hospedajes están disponibles</li>
+            </ol>
+            
+            <h4>🎯 Tipos de Hospedaje Disponibles:</h4>
+            <ul>
+                <li><strong>Cabañas:</strong> 8 unidades (1-CABAÑA a 8-CABAÑA), capacidad 5 personas</li>
+                <li><strong>Dormis:</strong> 14 unidades (0-DORMI a 13-DORMI), capacidad 4 personas</li>
+                <li><strong>Camping:</strong> Espacios para carpas</li>
+                <li><strong>Grupos:</strong> Áreas especiales para grupos grandes</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost/campinglasorpresa/api/endpoints';
+        
+        // Establecer fecha mínima como hoy
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('fechaEntrada').min = today;
+        document.getElementById('fechaSalida').min = today;
+        
+        // Actualizar fecha mínima de salida cuando cambie la entrada
+        document.getElementById('fechaEntrada').addEventListener('change', function() {
+            document.getElementById('fechaSalida').min = this.value;
+        });
+        
+        function logResult(elementId, message, isError = false) {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}\n`;
+            
+            if (isError) {
+                element.style.borderColor = '#dc3545';
+                element.style.backgroundColor = '#f8d7da';
+            } else {
+                element.style.borderColor = '#28a745';
+                element.style.backgroundColor = '#d4edda';
+            }
+            
+            element.textContent += logMessage;
+        }
+
+        async function testDisponibilidad() {
+            const resultElement = document.getElementById('resultDisponibilidad');
+            const resultadosElement = document.getElementById('resultadosDisponibilidad');
+            
+            resultElement.textContent = '';
+            resultadosElement.innerHTML = '';
+            
+            const tipoHospedaje = document.getElementById('tipoHospedaje').value;
+            const fechaEntrada = document.getElementById('fechaEntrada').value;
+            const fechaSalida = document.getElementById('fechaSalida').value;
+            
+            if (!tipoHospedaje || !fechaEntrada || !fechaSalida) {
+                logResult('resultDisponibilidad', '❌ Por favor completa todos los campos', true);
+                return;
+            }
+            
+            try {
+                logResult('resultDisponibilidad', '🔍 Verificando disponibilidad...');
+                
+                const apiUrl = `${API_BASE_URL}/hospedajes.php?disponibilidad=1&tipo_hospedaje_id=${tipoHospedaje}&fecha_entrada=${fechaEntrada}&fecha_salida=${fechaSalida}`;
+                
+                logResult('resultDisponibilidad', `🔗 URL de la API: ${apiUrl}`);
+                
+                const response = await fetch(apiUrl);
+                
+                logResult('resultDisponibilidad', `📡 Status: ${response.status}`);
+                logResult('resultDisponibilidad', `📡 OK: ${response.ok}`);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    logResult('resultDisponibilidad', `❌ Respuesta no exitosa: ${errorText}`, true);
+                    return;
+                }
+                
+                const data = await response.json();
+                logResult('resultDisponibilidad', `📊 Respuesta recibida: ${JSON.stringify(data, null, 2)}`);
+                
+                if (data.success) {
+                    logResult('resultDisponibilidad', `✅ Disponibilidad verificada exitosamente`);
+                    logResult('resultDisponibilidad', `🏕️ Hospedajes disponibles: ${data.hospedajes?.length || 0}`);
+                    
+                    // Mostrar resultados en formato más legible
+                    mostrarResultadosDisponibilidad(data.hospedajes, data.filtros);
+                } else {
+                    logResult('resultDisponibilidad', `❌ Error en la respuesta: ${data.error || 'Error desconocido'}`, true);
+                }
+                
+            } catch (error) {
+                logResult('resultDisponibilidad', `❌ Error: ${error.message}`, true);
+            }
+        }
+
+        function mostrarResultadosDisponibilidad(hospedajes, filtros) {
+            const resultadosElement = document.getElementById('resultadosDisponibilidad');
+            
+            if (!hospedajes || hospedajes.length === 0) {
+                resultadosElement.innerHTML = `
+                    <div class="test-section warning">
+                        <h4>⚠️ No hay hospedajes disponibles</h4>
+                        <p>Para el tipo de hospedaje seleccionado en las fechas especificadas, no hay unidades disponibles.</p>
+                        <p><strong>Filtros aplicados:</strong></p>
+                        <ul>
+                            <li>Tipo: ${getTipoHospedajeNombre(filtros.tipo_hospedaje_id)}</li>
+                            <li>Entrada: ${filtros.fecha_entrada}</li>
+                            <li>Salida: ${filtros.fecha_salida}</li>
+                        </ul>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <div class="test-section success">
+                    <h4>✅ Hospedajes Disponibles (${hospedajes.length})</h4>
+                    <p><strong>Filtros aplicados:</strong></p>
+                    <ul>
+                        <li>Tipo: ${getTipoHospedajeNombre(filtros.tipo_hospedaje_id)}</li>
+                        <li>Entrada: ${filtros.fecha_entrada}</li>
+                        <li>Salida: ${filtros.fecha_salida}</li>
+                    </ul>
+                </div>
+            `;
+            
+            hospedajes.forEach(hospedaje => {
+                html += `
+                    <div class="hospedaje-item">
+                        <div class="hospedaje-numero">${hospedaje.numero}</div>
+                        <div class="hospedaje-capacidad">Capacidad: ${hospedaje.capacidad} personas</div>
+                        <div class="hospedaje-tipo">Tipo: ${hospedaje.tipo_hospedaje_nombre || 'N/A'}</div>
+                        <div>ID: ${hospedaje.id}</div>
+                    </div>
+                `;
+            });
+            
+            resultadosElement.innerHTML = html;
+        }
+
+        function getTipoHospedajeNombre(tipoId) {
+            const tipos = {
+                '1': 'Cabaña',
+                '2': 'Dormis',
+                '3': 'Camping',
+                '4': 'Grupos'
+            };
+            return tipos[tipoId] || 'Desconocido';
+        }
+
+        function limpiarResultados() {
+            document.getElementById('resultDisponibilidad').textContent = '';
+            document.getElementById('resultadosDisponibilidad').innerHTML = '';
+            document.getElementById('tipoHospedaje').value = '';
+            document.getElementById('fechaEntrada').value = '';
+            document.getElementById('fechaSalida').value = '';
+        }
+
+        // Auto-ejecutar test básico al cargar la página
+        window.addEventListener('load', () => {
+            logResult('resultDisponibilidad', '🚀 Página cargada. Selecciona un tipo de hospedaje y fechas para verificar disponibilidad.');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API Directo - Diagnóstico</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .url-info {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .raw-response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Test API Directo - Diagnóstico Completo</h1>
+        
+        <div class="url-info">
+            <strong>🌍 Información del Entorno:</strong><br>
+            Hostname: <span id="hostname"></span><br>
+            URL Completa: <span id="fullUrl"></span><br>
+            Es Local: <span id="isLocal"></span>
+        </div>
+
+        <div class="test-section">
+            <h3>🔗 Test 1: Verificar URL de la API</h3>
+            <button onclick="testUrlStructure()">Probar Estructura de URLs</button>
+            <div id="result1"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔗 Test 2: Respuesta Raw de la API</h3>
+            <button onclick="testRawResponse()">Ver Respuesta Raw</button>
+            <div id="result2"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔗 Test 3: Headers de la Respuesta</h3>
+            <button onclick="testResponseHeaders()">Ver Headers</button>
+            <div id="result3"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔗 Test 4: Diferentes URLs de Prueba</h3>
+            <button onclick="testDifferentUrls()">Probar Diferentes URLs</button>
+            <div id="result4"></div>
+        </div>
+    </div>
+
+    <script>
+        // Mostrar información del entorno
+        document.getElementById('hostname').textContent = window.location.hostname;
+        document.getElementById('fullUrl').textContent = window.location.href;
+        document.getElementById('isLocal').textContent = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'Sí' : 'No';
+
+        // Función para obtener la URL de la API según el entorno
+        function getApiUrl(endpoint, params = '') {
+            const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            
+            if (isLocalDev) {
+                return `http://localhost/campinglasorpresa/api/endpoints/${endpoint}${params}`;
+            } else {
+                // En producción, usar la misma estructura que el componente original
+                const endpointWithoutPhp = endpoint.replace('.php', '');
+                return `/api/${endpointWithoutPhp}${params}`;
+            }
+        }
+
+        // Función para mostrar resultados
+        function showResult(elementId, success, message, data = null, rawData = null) {
+            const element = document.getElementById(elementId);
+            element.className = success ? 'success' : 'error';
+            let html = `<strong>${success ? '✅ Éxito' : '❌ Error'}:</strong> ${message}`;
+            
+            if (data) {
+                html += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            }
+            
+            if (rawData) {
+                html += `<div class="raw-response">${rawData}</div>`;
+            }
+            
+            element.innerHTML = html;
+        }
+
+        // Test 1: Verificar estructura de URLs
+        async function testUrlStructure() {
+            const urls = [
+                { name: 'Local (con .php)', url: 'http://localhost/campinglasorpresa/api/endpoints/hospedajes.php' },
+                { name: 'Producción (sin .php)', url: '/api/hospedajes' },
+                { name: 'Producción (con .php)', url: '/api/hospedajes.php' },
+                { name: 'Producción (endpoints)', url: '/api/endpoints/hospedajes.php' }
+            ];
+
+            let results = [];
+            
+            for (const urlInfo of urls) {
+                try {
+                    const response = await fetch(urlInfo.url, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    results.push({
+                        url: urlInfo.name,
+                        status: response.status,
+                        contentType: response.headers.get('content-type'),
+                        ok: response.ok
+                    });
+                } catch (error) {
+                    results.push({
+                        url: urlInfo.name,
+                        error: error.message
+                    });
+                }
+            }
+            
+            showResult('result1', true, 'Resultados de diferentes URLs:', results);
+        }
+
+        // Test 2: Respuesta raw
+        async function testRawResponse() {
+            try {
+                const apiUrl = getApiUrl('hospedajes.php');
+                console.log('🔗 Probando URL:', apiUrl);
+                
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const rawText = await response.text();
+                console.log('📄 Respuesta raw:', rawText);
+                
+                // Intentar parsear como JSON
+                let jsonData = null;
+                try {
+                    jsonData = JSON.parse(rawText);
+                } catch (e) {
+                    console.log('❌ No es JSON válido');
+                }
+                
+                showResult('result2', response.ok, 
+                    `Status: ${response.status}, Content-Type: ${response.headers.get('content-type')}`, 
+                    jsonData, rawText.substring(0, 500) + (rawText.length > 500 ? '...' : ''));
+                
+            } catch (error) {
+                console.error('❌ Error en test:', error);
+                showResult('result2', false, `Error: ${error.message}`);
+            }
+        }
+
+        // Test 3: Headers de respuesta
+        async function testResponseHeaders() {
+            try {
+                const apiUrl = getApiUrl('hospedajes.php');
+                
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const headers = {};
+                response.headers.forEach((value, key) => {
+                    headers[key] = value;
+                });
+                
+                showResult('result3', true, `Headers de la respuesta (Status: ${response.status}):`, headers);
+                
+            } catch (error) {
+                console.error('❌ Error en test:', error);
+                showResult('result3', false, `Error: ${error.message}`);
+            }
+        }
+
+        // Test 4: Diferentes URLs
+        async function testDifferentUrls() {
+            const testUrls = [
+                '/api/hospedajes',
+                '/api/hospedajes.php',
+                '/api/endpoints/hospedajes.php',
+                'https://www.campinglasorpresa.com/api/hospedajes',
+                'https://www.campinglasorpresa.com/api/hospedajes.php'
+            ];
+
+            let results = [];
+            
+            for (const url of testUrls) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const text = await response.text();
+                    const isJson = text.trim().startsWith('{') || text.trim().startsWith('[');
+                    
+                    results.push({
+                        url: url,
+                        status: response.status,
+                        contentType: response.headers.get('content-type'),
+                        isJson: isJson,
+                        preview: text.substring(0, 100) + (text.length > 100 ? '...' : '')
+                    });
+                } catch (error) {
+                    results.push({
+                        url: url,
+                        error: error.message
+                    });
+                }
+            }
+            
+            showResult('result4', true, 'Resultados de diferentes URLs:', results);
+        }
+
+        // Ejecutar test automáticamente al cargar
+        window.addEventListener('load', () => {
+            console.log('🚀 Página cargada, ejecutando tests automáticos...');
+            testUrlStructure();
+            testRawResponse();
+        });
+    </script>
+</body>
+</html>

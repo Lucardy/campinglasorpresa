@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Simple API</title>
+</head>
+<body>
+    <h1>Test Simple API</h1>
+    <div id="result"></div>
+    
+    <script>
+        async function testAPI() {
+            const url = '/api/endpoints/hospedajes.php';
+            console.log('Probando URL:', url);
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                console.log('Status:', response.status);
+                console.log('Headers:', response.headers);
+                
+                const text = await response.text();
+                console.log('Respuesta raw:', text);
+                
+                document.getElementById('result').innerHTML = `
+                    <h3>Resultado:</h3>
+                    <p><strong>Status:</strong> ${response.status}</p>
+                    <p><strong>Content-Type:</strong> ${response.headers.get('content-type')}</p>
+                    <p><strong>Respuesta:</strong></p>
+                    <pre>${text}</pre>
+                `;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        }
+        
+        // Ejecutar test al cargar
+        window.addEventListener('load', testAPI);
+    </script>
+</body>
+</html>

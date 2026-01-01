@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Cálculo de Precios - Camping La Sorpresa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { border-color: #28a745; background-color: #d4edda; }
+        .error { border-color: #dc3545; background-color: #f8d7da; }
+        .info { border-color: #17a2b8; background-color: #d1ecf1; }
+        .warning { border-color: #ffc107; background-color: #fff3cd; }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #6c757d; cursor: not-allowed; }
+        
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .precio-resultado {
+            background: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        .precio-calculado {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        
+        .precio-error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        
+        .calculando {
+            background: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Cálculo Automático de Precios</h1>
+        <p>Este archivo te permite probar el cálculo automático de precios en la Reserva Rápida.</p>
+        
+        <div class="test-section info">
+            <h3>📋 Funcionalidad Implementada</h3>
+            <p><strong>Características:</strong></p>
+            <ul>
+                <li>✅ Cálculo automático basado en tipo de hospedaje, cantidad de personas y fechas</li>
+                <li>✅ Integración con la API de precios existente</li>
+                <li>✅ Cálculo de días entre fecha de entrada y salida</li>
+                <li>✅ Interfaz visual con indicadores de carga</li>
+                <li>✅ Mensajes informativos para el usuario</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 Test de Cálculo de Precios</h3>
+            <p>Prueba el cálculo automático de precios con diferentes parámetros</p>
+            
+            <div class="form-group">
+                <label>Tipo de Hospedaje:</label>
+                <select id="tipoHospedaje">
+                    <option value="">Seleccionar tipo</option>
+                    <option value="1">Cabaña</option>
+                    <option value="2">Dormis</option>
+                    <option value="3">Camping</option>
+                    <option value="4">Grupos</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Cantidad de Personas:</label>
+                <input type="number" id="cantidadPersonas" min="1" value="2">
+            </div>
+            
+            <div class="form-group">
+                <label>Fecha de Entrada:</label>
+                <input type="date" id="fechaEntrada" min="">
+            </div>
+            
+            <div class="form-group">
+                <label>Fecha de Salida:</label>
+                <input type="date" id="fechaSalida" min="">
+            </div>
+            
+            <button onclick="calcularPrecio()">💰 Calcular Precio</button>
+            <button onclick="limpiarResultados()">🗑️ Limpiar</button>
+            
+            <div id="resultadoPrecio" class="precio-resultado" style="display: none;"></div>
+            <div id="resultCalculo" class="result"></div>
+        </div>
+
+        <div class="test-section warning">
+            <h3>📝 Casos de Prueba</h3>
+            <h4>✅ Escenarios Válidos:</h4>
+            <ul>
+                <li>Cabaña para 2 personas, 3 días</li>
+                <li>Dormis para 4 personas, 2 días</li>
+                <li>Camping para 6 personas, 5 días</li>
+                <li>Grupos para 10 personas, 1 día</li>
+            </ul>
+            
+            <h4>❌ Escenarios Inválidos:</h4>
+            <ul>
+                <li>Sin tipo de hospedaje seleccionado</li>
+                <li>Cantidad de personas = 0</li>
+                <li>Fechas inválidas o faltantes</li>
+                <li>Fecha de salida anterior a fecha de entrada</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost/campinglasorpresa/api/endpoints';
+        
+        // Establecer fecha mínima como hoy
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('fechaEntrada').min = today;
+        document.getElementById('fechaSalida').min = today;
+        
+        // Actualizar fecha mínima de salida cuando cambie la entrada
+        document.getElementById('fechaEntrada').addEventListener('change', function() {
+            document.getElementById('fechaSalida').min = this.value;
+        });
+        
+        function logResult(message, isError = false) {
+            const element = document.getElementById('resultCalculo');
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}\n`;
+            
+            if (isError) {
+                element.style.borderColor = '#dc3545';
+                element.style.backgroundColor = '#f8d7da';
+            } else {
+                element.style.borderColor = '#28a745';
+                element.style.backgroundColor = '#d4edda';
+            }
+            
+            element.textContent += logMessage;
+        }
+
+        function mostrarResultadoPrecio(precio, dias, precioPorDia, tipoHospedaje, cantidadPersonas) {
+            const resultadoElement = document.getElementById('resultadoPrecio');
+            const tipoNombre = getTipoHospedajeNombre(tipoHospedaje);
+            
+            resultadoElement.innerHTML = `
+                <h4>💰 Precio Calculado</h4>
+                <p><strong>Tipo:</strong> ${tipoNombre}</p>
+                <p><strong>Personas:</strong> ${cantidadPersonas}</p>
+                <p><strong>Días:</strong> ${dias}</p>
+                <p><strong>Precio por día:</strong> $${precioPorDia}</p>
+                <p><strong>Total:</strong> $${precio}</p>
+                <p><em>Cálculo: ${dias} días × $${precioPorDia} = $${precio}</em></p>
+            `;
+            
+            resultadoElement.className = 'precio-resultado precio-calculado';
+            resultadoElement.style.display = 'block';
+        }
+
+        function mostrarErrorPrecio(mensaje) {
+            const resultadoElement = document.getElementById('resultadoPrecio');
+            resultadoElement.innerHTML = `
+                <h4>❌ Error en el Cálculo</h4>
+                <p>${mensaje}</p>
+            `;
+            
+            resultadoElement.className = 'precio-resultado precio-error';
+            resultadoElement.style.display = 'block';
+        }
+
+        function mostrarCalculando() {
+            const resultadoElement = document.getElementById('resultadoPrecio');
+            resultadoElement.innerHTML = `
+                <h4>⏳ Calculando Precio...</h4>
+                <p>Obteniendo precio del servidor...</p>
+            `;
+            
+            resultadoElement.className = 'precio-resultado calculando';
+            resultadoElement.style.display = 'block';
+        }
+
+        async function calcularPrecio() {
+            const resultElement = document.getElementById('resultCalculo');
+            resultElement.textContent = '';
+            
+            const tipoHospedaje = document.getElementById('tipoHospedaje').value;
+            const cantidadPersonas = document.getElementById('cantidadPersonas').value;
+            const fechaEntrada = document.getElementById('fechaEntrada').value;
+            const fechaSalida = document.getElementById('fechaSalida').value;
+            
+            if (!tipoHospedaje || !cantidadPersonas || !fechaEntrada || !fechaSalida) {
+                logResult('❌ Por favor completa todos los campos', true);
+                mostrarErrorPrecio('Por favor completa todos los campos requeridos');
+                return;
+            }
+            
+            if (parseInt(cantidadPersonas) < 1) {
+                logResult('❌ La cantidad de personas debe ser mayor a 0', true);
+                mostrarErrorPrecio('La cantidad de personas debe ser mayor a 0');
+                return;
+            }
+            
+            if (fechaEntrada >= fechaSalida) {
+                logResult('❌ La fecha de salida debe ser posterior a la fecha de entrada', true);
+                mostrarErrorPrecio('La fecha de salida debe ser posterior a la fecha de entrada');
+                return;
+            }
+            
+            try {
+                mostrarCalculando();
+                logResult('💰 Iniciando cálculo de precio...');
+                
+                const apiUrl = `${API_BASE_URL}/hospedajes.php?precio&tipo_hospedaje_id=${tipoHospedaje}&cantidad_personas=${cantidadPersonas}&metodo_pago=efectivo`;
+                
+                logResult(`🔗 Consultando API: ${apiUrl}`);
+                
+                const response = await fetch(apiUrl);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    logResult(`❌ Error HTTP: ${response.status} - ${errorText}`, true);
+                    mostrarErrorPrecio(`Error del servidor: ${response.status}`);
+                    return;
+                }
+                
+                const data = await response.json();
+                logResult(`📊 Respuesta recibida: ${JSON.stringify(data)}`);
+                
+                if (data.success && data.precio) {
+                    // Calcular la cantidad de días
+                    const fechaEntradaObj = new Date(fechaEntrada);
+                    const fechaSalidaObj = new Date(fechaSalida);
+                    const diffTime = Math.abs(fechaSalidaObj - fechaEntradaObj);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    
+                    const precioPorDia = parseFloat(data.precio);
+                    const montoTotal = precioPorDia * diffDays;
+                    
+                    logResult(`✅ Cálculo exitoso:`);
+                    logResult(`  - Precio por día: $${precioPorDia}`);
+                    logResult(`  - Cantidad de días: ${diffDays}`);
+                    logResult(`  - Total: $${montoTotal}`);
+                    
+                    mostrarResultadoPrecio(montoTotal, diffDays, precioPorDia, tipoHospedaje, cantidadPersonas);
+                } else {
+                    logResult(`❌ Error en la respuesta: ${data.error || 'Error desconocido'}`, true);
+                    mostrarErrorPrecio(data.error || 'Error desconocido al obtener el precio');
+                }
+                
+            } catch (error) {
+                logResult(`❌ Error: ${error.message}`, true);
+                mostrarErrorPrecio(`Error de conexión: ${error.message}`);
+            }
+        }
+
+        function getTipoHospedajeNombre(tipoId) {
+            const tipos = {
+                '1': 'Cabaña',
+                '2': 'Dormis',
+                '3': 'Camping',
+                '4': 'Grupos'
+            };
+            return tipos[tipoId] || 'Desconocido';
+        }
+
+        function limpiarResultados() {
+            document.getElementById('resultCalculo').textContent = '';
+            document.getElementById('resultadoPrecio').style.display = 'none';
+            document.getElementById('tipoHospedaje').value = '';
+            document.getElementById('cantidadPersonas').value = '2';
+            document.getElementById('fechaEntrada').value = '';
+            document.getElementById('fechaSalida').value = '';
+        }
+
+        // Auto-ejecutar al cargar la página
+        window.addEventListener('load', () => {
+            logResult('🚀 Página cargada. Sistema de cálculo automático de precios listo.');
+            logResult('💡 Selecciona un tipo de hospedaje, cantidad de personas y fechas para probar.');
+        });
+    </script>
+</body>
+</html>

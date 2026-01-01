@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Creación Cliente + Reserva - Camping La Sorpresa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { border-color: #28a745; background-color: #d4edda; }
+        .error { border-color: #dc3545; background-color: #f8d7da; }
+        .info { border-color: #17a2b8; background-color: #d1ecf1; }
+        .warning { border-color: #ffc107; background-color: #fff3cd; }
+        
+        .fix-details {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .problem-solution {
+            background: #e7f3ff;
+            border: 1px solid #b3d7ff;
+            color: #004085;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .code-changes {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        
+        .test-steps {
+            counter-reset: step-counter;
+        }
+        
+        .test-steps li {
+            counter-increment: step-counter;
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .test-steps li:before {
+            content: "Paso " counter(step-counter) ": ";
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Test Creación Cliente + Reserva</h1>
+        <p>Verificación del problema y solución implementada</p>
+        
+        <div class="test-section error">
+            <h3>❌ Problema Identificado</h3>
+            <p><strong>Error:</strong> <code>POST http://localhost/campinglasorpresa/api/endpoints/reservas.php 500 (Internal Server Error)</code></p>
+            <p><strong>Mensaje:</strong> <code>Error: El campo cliente_id es requerido</code></p>
+            <p><strong>Causa:</strong> La función <code>handleCreateCliente</code> retornaba <code>true</code> en lugar del objeto del cliente creado</p>
+        </div>
+
+        <div class="problem-solution">
+            <h3>🔍 Análisis del Problema</h3>
+            <p><strong>Flujo del error:</strong></p>
+            <ol>
+                <li>Usuario completa formulario con cliente nuevo</li>
+                <li>Se llama a <code>handleCreateCliente(clienteData)</code></li>
+                <li>La función retorna <code>true</code> en lugar del objeto cliente</li>
+                <li>Se intenta acceder a <code>nuevoCliente.id</code> → <code>undefined</code></li>
+                <li>Se envía <code>cliente_id: undefined</code> a la API</li>
+                <li>API rechaza la reserva por falta de <code>cliente_id</code></li>
+            </ol>
+        </div>
+
+        <div class="test-section success">
+            <h3>✅ Solución Implementada</h3>
+            <p><strong>Archivo modificado:</strong> <code>src/components/Admin/hooks/useAdmin.js</code></p>
+            
+            <div class="fix-details">
+<strong>ANTES:</strong>
+const responseData = await response.json();
+console.log('✅ Cliente creado exitosamente:', responseData);
+await fetchClientes();
+notify.success('Cliente creado exitosamente');
+return true;  // ❌ PROBLEMA: Retorna true en lugar del objeto
+
+<strong>DESPUÉS:</strong>
+const responseData = await response.json();
+console.log('✅ Cliente creado exitosamente:', responseData);
+await fetchClientes();
+notify.success('Cliente creado exitosamente');
+
+// ✅ SOLUCIÓN: Retornar el objeto del cliente creado
+return responseData.cliente || responseData;
+            </div>
+        </div>
+
+        <div class="test-section info">
+            <h3>🔧 Mejoras Adicionales</h3>
+            <p><strong>Archivo modificado:</strong> <code>src/components/Admin/ReservaRapida/hooks/useReservaRapida.js</code></p>
+            
+            <div class="code-changes">
+✅ Logging mejorado para debugging
+✅ Validación del ID del cliente antes de crear reserva
+✅ Verificación de que el objeto cliente tenga ID
+✅ Mensajes de error más descriptivos
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 Pasos para Probar la Solución</h3>
+            <ol class="test-steps">
+                <li><strong>Navegar a Reserva Rápida:</strong> Ir a <code>/admin/reserva-rapida</code></li>
+                <li><strong>Completar datos del cliente:</strong> Usar un documento que no exista en la base de datos</li>
+                <li><strong>Completar datos de la reserva:</strong> Seleccionar fechas, tipo de hospedaje, etc.</li>
+                <li><strong>Hacer clic en "Crear Reserva":</strong> Verificar que no aparezca el error 500</li>
+                <li><strong>Verificar en consola:</strong> Debe aparecer el logging del cliente creado</li>
+                <li><strong>Verificar en base de datos:</strong> El cliente y la reserva deben crearse correctamente</li>
+            </ol>
+        </div>
+
+        <div class="test-section success">
+            <h3>📊 Logging Esperado</h3>
+            <div class="code-changes">
+🔄 Creando nuevo cliente con datos: {nombre: "...", apellido: "...", ...}
+✅ Cliente creado, respuesta: {id: 123, nombre: "...", ...}
+✅ Cliente ID obtenido: 123
+🔄 Creando reserva con datos: {cliente_id: 123, hospedaje_id: "...", ...}
+🔍 Verificando cliente_id: 123 tipo: number
+✅ Reserva creada exitosamente
+            </div>
+        </div>
+
+        <div class="test-section warning">
+            <h3>⚠️ Verificaciones Importantes</h3>
+            <ul>
+                <li><strong>Consola del navegador:</strong> No debe aparecer el error 500</li>
+                <li><strong>Notificaciones:</strong> Debe aparecer "Cliente creado exitosamente" y "Reserva creada exitosamente"</li>
+                <li><strong>Formulario:</strong> Debe limpiarse después de crear la reserva</li>
+                <li><strong>Base de datos:</strong> Debe aparecer el nuevo cliente y la nueva reserva</li>
+                <li><strong>Lista de reservas:</strong> Debe actualizarse con la nueva reserva</li>
+            </ul>
+        </div>
+
+        <div class="test-section info">
+            <h3>🔍 Debugging Adicional</h3>
+            <p><strong>Si el problema persiste, verificar:</strong></p>
+            <ul>
+                <li>La respuesta de la API de clientes incluye el campo <code>id</code></li>
+                <li>El formato de la respuesta es <code>{cliente: {...}}</code> o <code>{id: ..., nombre: ...}</code></li>
+                <li>No hay errores en la consola del servidor (XAMPP)</li>
+                <li>La base de datos tiene las tablas correctas</li>
+            </ul>
+        </div>
+
+        <div class="test-section success">
+            <h3>🎯 Resultado Esperado</h3>
+            <p><strong>Después de la corrección:</strong></p>
+            <ul>
+                <li>✅ Cliente nuevo se crea correctamente</li>
+                <li>✅ ID del cliente se obtiene correctamente</li>
+                <li>✅ Reserva se crea con el cliente_id válido</li>
+                <li>✅ No hay errores 500 en la consola</li>
+                <li>✅ Proceso completo funciona sin problemas</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Auto-ejecutar al cargar la página
+        window.addEventListener('load', () => {
+            console.log('🔧 Test Creación Cliente + Reserva');
+            console.log('❌ Problema identificado: handleCreateCliente retornaba true');
+            console.log('✅ Solución implementada: Retornar objeto del cliente');
+            console.log('🧪 Listo para probar en el navegador');
+            
+            // Simular el flujo corregido
+            setTimeout(() => {
+                console.log('🔄 Simulando flujo corregido:');
+                console.log('  1. Crear cliente → {id: 123, nombre: "Juan"}');
+                console.log('  2. Obtener ID → 123');
+                console.log('  3. Crear reserva → {cliente_id: 123, ...}');
+                console.log('  4. ✅ Éxito');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

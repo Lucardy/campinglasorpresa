@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Cantidades Disponibles - Camping La Sorpresa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { border-color: #28a745; background-color: #d4edda; }
+        .error { border-color: #dc3545; background-color: #f8d7da; }
+        .info { border-color: #17a2b8; background-color: #d1ecf1; }
+        .warning { border-color: #ffc107; background-color: #fff3cd; }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #6c757d; cursor: not-allowed; }
+        
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .cantidades-resultado {
+            background: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        .cantidades-calculadas {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        
+        .cantidades-error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        
+        .cantidades-info {
+            background: #e7f3ff;
+            color: #004085;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid #b3d7ff;
+        }
+        
+        .tipo-hospedaje {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 5px 0;
+        }
+        
+        .tipo-cabana { border-left: 4px solid #28a745; }
+        .tipo-dormis { border-left: 4px solid #17a2b8; }
+        .tipo-camping { border-left: 4px solid #ffc107; }
+        .tipo-grupos { border-left: 4px solid #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Cantidades Disponibles por Tipo de Hospedaje</h1>
+        <p>Este archivo te permite probar las cantidades disponibles según el tipo de hospedaje seleccionado.</p>
+        
+        <div class="test-section info">
+            <h3>📋 Funcionalidad Implementada</h3>
+            <p><strong>Características:</strong></p>
+            <ul>
+                <li>✅ Cantidades adaptativas según tipo de hospedaje</li>
+                <li>✅ Cabañas: 2-5 personas</li>
+                <li>✅ Dormis: 2-4 personas</li>
+                <li>✅ Camping: 1-10 personas</li>
+                <li>✅ Grupos: 10-50 personas</li>
+                <li>✅ Fallback a cantidades por defecto si la API falla</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 Test de Cantidades Disponibles</h3>
+            <p>Prueba las cantidades disponibles para cada tipo de hospedaje</p>
+            
+            <div class="form-group">
+                <label>Tipo de Hospedaje:</label>
+                <select id="tipoHospedaje">
+                    <option value="">Seleccionar tipo</option>
+                    <option value="1">Cabaña</option>
+                    <option value="2">Dormis</option>
+                    <option value="3">Camping</option>
+                    <option value="4">Grupos</option>
+                </select>
+            </div>
+            
+            <button onclick="obtenerCantidades()">🔢 Obtener Cantidades</button>
+            <button onclick="probarTodos()">🧪 Probar Todos los Tipos</button>
+            <button onclick="limpiarResultados()">🗑️ Limpiar</button>
+            
+            <div id="resultadoCantidades" class="cantidades-resultado" style="display: none;"></div>
+            <div id="resultCantidades" class="result"></div>
+        </div>
+
+        <div class="test-section warning">
+            <h3>📝 Tipos de Hospedaje y Cantidades</h3>
+            
+            <div class="tipo-hospedaje tipo-cabana">
+                <h4>🏠 Cabaña</h4>
+                <p><strong>Cantidades:</strong> 2, 3, 4, 5 personas</p>
+                <p><strong>Descripción:</strong> Cabañas con todas las comodidades</p>
+            </div>
+            
+            <div class="tipo-hospedaje tipo-dormis">
+                <h4>🛏️ Dormis</h4>
+                <p><strong>Cantidades:</strong> 2, 3, 4 personas</p>
+                <p><strong>Descripción:</strong> Dormitorios compartidos</p>
+            </div>
+            
+            <div class="tipo-hospedaje tipo-camping">
+                <h4>⛺ Camping</h4>
+                <p><strong>Cantidades:</strong> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 personas</p>
+                <p><strong>Descripción:</strong> Espacios para carpas</p>
+            </div>
+            
+            <div class="tipo-hospedaje tipo-grupos">
+                <h4>👥 Grupos</h4>
+                <p><strong>Cantidades:</strong> 10, 15, 20, 25, 30, 35, 40, 45, 50 personas</p>
+                <p><strong>Descripción:</strong> Áreas para grupos grandes</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost/campinglasorpresa/api/endpoints';
+        
+        function logResult(message, isError = false) {
+            const element = document.getElementById('resultCantidades');
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}\n`;
+            
+            if (isError) {
+                element.style.borderColor = '#dc3545';
+                element.style.backgroundColor = '#f8d7da';
+            } else {
+                element.style.borderColor = '#28a745';
+                element.style.backgroundColor = '#d4edda';
+            }
+            
+            element.textContent += logMessage;
+        }
+
+        function mostrarResultadoCantidades(tipoHospedaje, cantidades) {
+            const resultadoElement = document.getElementById('resultadoCantidades');
+            const tipoNombre = getTipoHospedajeNombre(tipoHospedaje);
+            
+            resultadoElement.innerHTML = `
+                <h4>🔢 Cantidades Disponibles</h4>
+                <p><strong>Tipo:</strong> ${tipoNombre}</p>
+                <p><strong>Cantidades:</strong> ${cantidades.join(', ')} personas</p>
+                <p><strong>Total de opciones:</strong> ${cantidades.length}</p>
+                <div class="cantidades-info">
+                    💡 Estas son las cantidades válidas para ${tipoNombre}
+                </div>
+            `;
+            
+            resultadoElement.className = 'cantidades-resultado cantidades-calculadas';
+            resultadoElement.style.display = 'block';
+        }
+
+        function mostrarErrorCantidades(mensaje) {
+            const resultadoElement = document.getElementById('resultadoCantidades');
+            resultadoElement.innerHTML = `
+                <h4>❌ Error al Obtener Cantidades</h4>
+                <p>${mensaje}</p>
+            `;
+            
+            resultadoElement.className = 'cantidades-resultado cantidades-error';
+            resultadoElement.style.display = 'block';
+        }
+
+        function getCantidadesPorDefecto(tipoHospedajeId) {
+            switch (parseInt(tipoHospedajeId)) {
+                case 1: // Cabaña
+                    return [2, 3, 4, 5];
+                case 2: // Dormis
+                    return [2, 3, 4];
+                case 3: // Camping
+                    return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+                case 4: // Grupos
+                    return [10, 15, 20, 25, 30, 35, 40, 45, 50];
+                default:
+                    return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            }
+        }
+
+        async function obtenerCantidades() {
+            const resultElement = document.getElementById('resultCantidades');
+            resultElement.textContent = '';
+            
+            const tipoHospedaje = document.getElementById('tipoHospedaje').value;
+            
+            if (!tipoHospedaje) {
+                logResult('❌ Por favor selecciona un tipo de hospedaje', true);
+                mostrarErrorCantidades('Por favor selecciona un tipo de hospedaje');
+                return;
+            }
+            
+            try {
+                logResult(`🔢 Obteniendo cantidades para tipo: ${tipoHospedaje}`);
+                
+                const apiUrl = `${API_BASE_URL}/hospedajes.php?cantidades_personas=1&tipo_hospedaje_id=${tipoHospedaje}`;
+                
+                logResult(`🔗 Consultando API: ${apiUrl}`);
+                
+                const response = await fetch(apiUrl);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    logResult(`❌ Error HTTP: ${response.status} - ${errorText}`, true);
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                logResult(`📊 Respuesta recibida: ${JSON.stringify(data)}`);
+                
+                if (data.success && data.cantidades) {
+                    logResult(`✅ Cantidades obtenidas: ${data.cantidades.join(', ')}`);
+                    mostrarResultadoCantidades(tipoHospedaje, data.cantidades);
+                } else {
+                    logResult(`⚠️ API no devolvió cantidades, usando valores por defecto`);
+                    const cantidadesDefecto = getCantidadesPorDefecto(tipoHospedaje);
+                    logResult(`✅ Cantidades por defecto: ${cantidadesDefecto.join(', ')}`);
+                    mostrarResultadoCantidades(tipoHospedaje, cantidadesDefecto);
+                }
+                
+            } catch (error) {
+                logResult(`❌ Error: ${error.message}`, true);
+                logResult(`⚠️ Usando cantidades por defecto como fallback`);
+                const cantidadesDefecto = getCantidadesPorDefecto(tipoHospedaje);
+                logResult(`✅ Cantidades por defecto: ${cantidadesDefecto.join(', ')}`);
+                mostrarResultadoCantidades(tipoHospedaje, cantidadesDefecto);
+            }
+        }
+
+        async function probarTodos() {
+            const resultElement = document.getElementById('resultCantidades');
+            resultElement.textContent = '';
+            
+            logResult('🧪 Probando todos los tipos de hospedaje...');
+            
+            const tipos = [
+                { id: 1, nombre: 'Cabaña' },
+                { id: 2, nombre: 'Dormis' },
+                { id: 3, nombre: 'Camping' },
+                { id: 4, nombre: 'Grupos' }
+            ];
+            
+            for (const tipo of tipos) {
+                logResult(`\n--- Probando ${tipo.nombre} ---`);
+                
+                try {
+                    const apiUrl = `${API_BASE_URL}/hospedajes.php?cantidades_personas=1&tipo_hospedaje_id=${tipo.id}`;
+                    const response = await fetch(apiUrl);
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success && data.cantidades) {
+                            logResult(`✅ ${tipo.nombre}: ${data.cantidades.join(', ')}`);
+                        } else {
+                            const cantidadesDefecto = getCantidadesPorDefecto(tipo.id);
+                            logResult(`⚠️ ${tipo.nombre}: ${cantidadesDefecto.join(', ')} (por defecto)`);
+                        }
+                    } else {
+                        const cantidadesDefecto = getCantidadesPorDefecto(tipo.id);
+                        logResult(`❌ ${tipo.nombre}: ${cantidadesDefecto.join(', ')} (fallback)`);
+                    }
+                } catch (error) {
+                    const cantidadesDefecto = getCantidadesPorDefecto(tipo.id);
+                    logResult(`❌ ${tipo.nombre}: ${cantidadesDefecto.join(', ')} (fallback)`);
+                }
+            }
+            
+            logResult('\n✅ Prueba completada');
+        }
+
+        function getTipoHospedajeNombre(tipoId) {
+            const tipos = {
+                '1': 'Cabaña',
+                '2': 'Dormis',
+                '3': 'Camping',
+                '4': 'Grupos'
+            };
+            return tipos[tipoId] || 'Desconocido';
+        }
+
+        function limpiarResultados() {
+            document.getElementById('resultCantidades').textContent = '';
+            document.getElementById('resultadoCantidades').style.display = 'none';
+            document.getElementById('tipoHospedaje').value = '';
+        }
+
+        // Auto-ejecutar al cargar la página
+        window.addEventListener('load', () => {
+            logResult('🚀 Página cargada. Sistema de cantidades disponibles listo.');
+            logResult('💡 Selecciona un tipo de hospedaje para ver las cantidades disponibles.');
+        });
+    </script>
+</body>
+</html>

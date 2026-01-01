@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API Local - Camping La Sorpresa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { border-color: #28a745; background-color: #d4edda; }
+        .error { border-color: #dc3545; background-color: #f8d7da; }
+        .info { border-color: #17a2b8; background-color: #d1ecf1; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .url-display {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test API Local - Camping La Sorpresa</h1>
+        <p>Este archivo te permite probar la API de hospedajes en tu entorno local de XAMPP.</p>
+        
+        <div class="test-section info">
+            <h3>📋 Información del Entorno</h3>
+            <div class="url-display">
+                <strong>URL de la API:</strong> http://localhost/campinglasorpresa/api/endpoints/hospedajes.php
+            </div>
+            <p><strong>Ubicación esperada:</strong> C:\xampp\htdocs\campinglasorpresa\api\</p>
+            <p><strong>Puerto XAMPP:</strong> 80 (http://localhost)</p>
+        </div>
+
+        <div class="test-section">
+            <h3>🔗 Test 1: Conexión Básica</h3>
+            <p>Prueba la conexión básica a la API</p>
+            <button onclick="testBasicConnection()">Probar Conexión</button>
+            <div id="result1" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Test 2: Obtener Tipos de Hospedaje</h3>
+            <p>Prueba obtener los tipos de hospedaje y hospedajes</p>
+            <button onclick="testGetHospedajes()">Obtener Hospedajes</button>
+            <div id="result2" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 Test 3: Verificar Estructura de Respuesta</h3>
+            <p>Verifica que la respuesta tenga la estructura correcta</p>
+            <button onclick="testResponseStructure()">Verificar Estructura</button>
+            <div id="result3" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🚨 Test 4: Manejo de Errores</h3>
+            <p>Prueba el manejo de errores con una URL incorrecta</p>
+            <button onclick="testErrorHandling()">Probar Errores</button>
+            <div id="result4" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📝 Instrucciones para Solucionar Problemas</h3>
+            <ol>
+                <li><strong>Verifica que XAMPP esté corriendo</strong> - Apache debe estar activo</li>
+                <li><strong>Verifica la ruta de archivos</strong> - Los archivos deben estar en C:\xampp\htdocs\campinglasorpresa\api\</li>
+                <li><strong>Verifica permisos</strong> - Los archivos PHP deben ser legibles</li>
+                <li><strong>Verifica la base de datos</strong> - MySQL debe estar corriendo y accesible</li>
+                <li><strong>Revisa los logs de XAMPP</strong> - Busca errores en Apache y MySQL</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost/campinglasorpresa/api/endpoints';
+        
+        function logResult(elementId, message, isError = false) {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}\n`;
+            
+            if (isError) {
+                element.style.borderColor = '#dc3545';
+                element.style.backgroundColor = '#f8d7da';
+            } else {
+                element.style.borderColor = '#28a745';
+                element.style.backgroundColor = '#d4edda';
+            }
+            
+            element.textContent += logMessage;
+        }
+
+        async function testBasicConnection() {
+            const resultElement = document.getElementById('result1');
+            resultElement.textContent = '';
+            
+            try {
+                logResult('result1', '🔗 Probando conexión básica...');
+                
+                const response = await fetch(`${API_BASE_URL}/hospedajes.php`);
+                
+                logResult('result1', `📡 Status: ${response.status}`);
+                logResult('result1', `📡 OK: ${response.ok}`);
+                logResult('result1', `📡 Headers: ${JSON.stringify([...response.headers.entries()])}`);
+                
+                if (response.ok) {
+                    logResult('result1', '✅ Conexión exitosa!');
+                } else {
+                    logResult('result1', '❌ Conexión falló');
+                }
+                
+            } catch (error) {
+                logResult('result1', `❌ Error: ${error.message}`, true);
+            }
+        }
+
+        async function testGetHospedajes() {
+            const resultElement = document.getElementById('result2');
+            resultElement.textContent = '';
+            
+            try {
+                logResult('result2', '🔗 Obteniendo tipos de hospedaje y hospedajes...');
+                
+                const response = await fetch(`${API_BASE_URL}/hospedajes.php`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                logResult('result2', `📊 Respuesta recibida: ${JSON.stringify(data, null, 2)}`);
+                
+                if (data.success) {
+                    logResult('result2', `✅ Tipos de hospedaje: ${data.tipos_hospedaje?.length || 0}`);
+                    logResult('result2', `✅ Hospedajes: ${data.hospedajes?.length || 0}`);
+                } else {
+                    logResult('result2', `❌ Error en la respuesta: ${data.error || 'Desconocido'}`);
+                }
+                
+            } catch (error) {
+                logResult('result2', `❌ Error: ${error.message}`, true);
+            }
+        }
+
+        async function testResponseStructure() {
+            const resultElement = document.getElementById('result3');
+            resultElement.textContent = '';
+            
+            try {
+                logResult('result3', '🔍 Verificando estructura de respuesta...');
+                
+                const response = await fetch(`${API_BASE_URL}/hospedajes.php`);
+                const data = await response.json();
+                
+                // Verificar estructura
+                const hasSuccess = 'success' in data;
+                const hasTiposHospedaje = 'tipos_hospedaje' in data;
+                const hasHospedajes = 'hospedajes' in data;
+                
+                logResult('result3', `📋 Campo 'success': ${hasSuccess ? '✅' : '❌'}`);
+                logResult('result3', `📋 Campo 'tipos_hospedaje': ${hasTiposHospedaje ? '✅' : '❌'}`);
+                logResult('result3', `📋 Campo 'hospedajes': ${hasHospedajes ? '✅' : '❌'}`);
+                
+                if (data.success && Array.isArray(data.tipos_hospedaje) && Array.isArray(data.hospedajes)) {
+                    logResult('result3', '🎉 Estructura de respuesta correcta!');
+                    
+                    // Mostrar ejemplo de tipos de hospedaje
+                    if (data.tipos_hospedaje.length > 0) {
+                        logResult('result3', `📝 Ejemplo de tipo de hospedaje: ${JSON.stringify(data.tipos_hospedaje[0])}`);
+                    }
+                    
+                    // Mostrar ejemplo de hospedaje
+                    if (data.hospedajes.length > 0) {
+                        logResult('result3', `🏕️ Ejemplo de hospedaje: ${JSON.stringify(data.hospedajes[0])}`);
+                    }
+                } else {
+                    logResult('result3', '❌ Estructura de respuesta incorrecta', true);
+                }
+                
+            } catch (error) {
+                logResult('result3', `❌ Error: ${error.message}`, true);
+            }
+        }
+
+        async function testErrorHandling() {
+            const resultElement = document.getElementById('result4');
+            resultElement.textContent = '';
+            
+            try {
+                logResult('result4', '🚨 Probando manejo de errores...');
+                
+                // Intentar con una URL que no existe
+                const response = await fetch(`${API_BASE_URL}/archivo_que_no_existe.php`);
+                
+                logResult('result4', `📡 Status: ${response.status}`);
+                logResult('result4', `📡 OK: ${response.ok}`);
+                
+                if (!response.ok) {
+                    logResult('result4', '✅ Error manejado correctamente (404 esperado)');
+                } else {
+                    logResult('result4', '⚠️ Respuesta inesperada');
+                }
+                
+            } catch (error) {
+                logResult('result4', `✅ Error capturado correctamente: ${error.message}`);
+            }
+        }
+
+        // Auto-ejecutar test básico al cargar la página
+        window.addEventListener('load', () => {
+            logResult('result1', '🚀 Página cargada. Haz clic en "Probar Conexión" para comenzar.');
+        });
+    </script>
+</body>
+</html>

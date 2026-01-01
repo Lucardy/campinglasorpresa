@@ -1,0 +1,901 @@
+.reserva-rapida-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f8f9fa;
+    min-height: 100vh;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+.reserva-rapida-header {
+    text-align: center;
+    margin-bottom: 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+.reserva-rapida-header h1 {
+    margin: 0 0 10px 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.reserva-rapida-header p {
+    margin: 0;
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.reserva-rapida-form {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    margin-bottom: 30px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+.form-section {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 12px;
+    border: 2px solid #e9ecef;
+}
+
+.form-section h3 {
+    margin: 0 0 20px 0;
+    color: #495057;
+    font-size: 1.3rem;
+    font-weight: 600;
+    border-bottom: 2px solid #dee2e6;
+    padding-bottom: 10px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* Ajustes responsive para form-row */
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-row {
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+}
+
+@media (max-width: 360px) {
+    .form-row {
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group input:hover,
+.form-group select:hover,
+.form-group textarea:hover {
+    border-color: #adb5bd;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.cliente-existente {
+    background: #d4edda;
+    color: #155724;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid #c3e6cb;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #e9ecef;
+}
+
+.btn-principal,
+.btn-secundario {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 180px;
+}
+
+.btn-principal {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+}
+
+.btn-principal:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+}
+
+.btn-principal:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-secundario {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: white;
+}
+
+.btn-secundario:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3);
+}
+
+.info-panel {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border: 2px solid #2196f3;
+    border-radius: 12px;
+    padding: 25px;
+    margin-top: 20px;
+}
+
+.info-panel h4 {
+    margin: 0 0 15px 0;
+    color: #1976d2;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.info-panel ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.info-panel li {
+    margin-bottom: 8px;
+    color: #1565c0;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .reserva-rapida-container {
+        padding: 15px;
+    }
+    
+    .reserva-rapida-header {
+        padding: 20px;
+    }
+    
+    .reserva-rapida-header h1 {
+        font-size: 2rem;
+    }
+    
+    .reserva-rapida-form {
+        padding: 20px;
+    }
+    
+    .form-section {
+        padding: 20px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn-principal,
+    .btn-secundario {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+/* Media query para el rango 481px-600px */
+@media (max-width: 600px) and (min-width: 481px) {
+    .reserva-rapida-container {
+        padding: 12px;
+    }
+    
+    .reserva-rapida-header {
+        padding: 18px;
+    }
+    
+    .reserva-rapida-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .reserva-rapida-form {
+        padding: 18px;
+    }
+    
+    .form-section {
+        padding: 18px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn-principal,
+    .btn-secundario {
+        width: 100%;
+        max-width: 350px;
+    }
+}
+
+/* Media query específica para el rango problemático 350px-450px */
+@media (max-width: 450px) and (min-width: 361px) {
+    .reserva-rapida-container {
+        padding: 12px;
+    }
+    
+    .reserva-rapida-header {
+        padding: 16px;
+        margin-bottom: 20px;
+    }
+    
+    .reserva-rapida-header h1 {
+        font-size: 1.7rem;
+        margin-bottom: 8px;
+    }
+    
+    .reserva-rapida-header p {
+        font-size: 0.95rem;
+    }
+    
+    .reserva-rapida-form {
+        padding: 16px;
+        margin-bottom: 20px;
+    }
+    
+    .form-section {
+        padding: 16px;
+        margin-bottom: 15px;
+    }
+    
+    .form-section h3 {
+        font-size: 1.15rem;
+        margin-bottom: 15px;
+    }
+    
+    .form-group label {
+        font-size: 0.9rem;
+        margin-bottom: 6px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+    
+    .form-group textarea {
+        min-height: 70px;
+    }
+    
+    .form-actions {
+        gap: 15px;
+        padding-top: 15px;
+    }
+    
+    .btn-principal,
+    .btn-secundario {
+        padding: 12px 20px;
+        font-size: 1rem;
+        width: 100%;
+        max-width: none;
+    }
+    
+    .info-panel {
+        padding: 16px;
+        margin-top: 15px;
+    }
+    
+    .info-panel h4 {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+    
+    .info-panel li {
+        font-size: 0.9rem;
+        margin-bottom: 6px;
+    }
+    
+    /* Ajustes para mensajes informativos */
+    .cliente-existente,
+    .verificando-disponibilidad,
+    .sin-disponibilidad,
+    .calculando-precio-mensaje,
+    .precio-calculado,
+    .cantidades-info,
+    .metodo-pago-info,
+    .descuento-info,
+    .noches-info {
+        padding: 7px 11px;
+        font-size: 0.8rem;
+        border-radius: 5px;
+    }
+}
+
+@media (max-width: 480px) and (min-width: 451px) {
+    .reserva-rapida-container {
+        padding: 10px;
+    }
+    
+    .reserva-rapida-header {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .reserva-rapida-header h1 {
+        font-size: 1.6rem;
+        margin-bottom: 8px;
+    }
+    
+    .reserva-rapida-header p {
+        font-size: 0.9rem;
+    }
+    
+    .reserva-rapida-form {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .form-section {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .form-section h3 {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+    
+    .form-group label {
+        font-size: 0.85rem;
+        margin-bottom: 6px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+    
+    .form-actions {
+        gap: 15px;
+        padding-top: 15px;
+    }
+    
+    .btn-principal,
+    .btn-secundario {
+        padding: 12px 20px;
+        font-size: 1rem;
+        min-width: auto;
+        width: 100%;
+        max-width: none;
+    }
+    
+    .info-panel {
+        padding: 15px;
+        margin-top: 15px;
+    }
+    
+    .info-panel h4 {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+    
+    .info-panel li {
+        font-size: 0.85rem;
+        margin-bottom: 6px;
+    }
+}
+
+/* Media query para dispositivos muy pequeños (350px y menos) */
+@media (max-width: 360px) {
+    .reserva-rapida-container {
+        padding: 8px;
+    }
+    
+    .reserva-rapida-header {
+        padding: 12px;
+        border-radius: 10px;
+    }
+    
+    .reserva-rapida-header h1 {
+        font-size: 1.4rem;
+        margin-bottom: 6px;
+    }
+    
+    .reserva-rapida-header p {
+        font-size: 0.85rem;
+    }
+    
+    .reserva-rapida-form {
+        padding: 12px;
+        border-radius: 10px;
+    }
+    
+    .form-section {
+        padding: 12px;
+        border-radius: 8px;
+    }
+    
+    .form-section h3 {
+        font-size: 1rem;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+    }
+    
+    .form-group label {
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+        border-radius: 6px;
+    }
+    
+    .form-group textarea {
+        min-height: 60px;
+    }
+    
+    .form-actions {
+        gap: 12px;
+        padding-top: 12px;
+    }
+    
+    .btn-principal,
+    .btn-secundario {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+        border-radius: 6px;
+    }
+    
+    .info-panel {
+        padding: 12px;
+        border-radius: 8px;
+    }
+    
+    .info-panel h4 {
+        font-size: 1rem;
+        margin-bottom: 8px;
+    }
+    
+    .info-panel li {
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+    }
+    
+    /* Ajustes para mensajes informativos */
+    .cliente-existente,
+    .verificando-disponibilidad,
+    .sin-disponibilidad,
+    .calculando-precio-mensaje,
+    .precio-calculado,
+    .cantidades-info,
+    .metodo-pago-info,
+    .descuento-info,
+    .noches-info {
+        padding: 6px 10px;
+        font-size: 0.75rem;
+        border-radius: 4px;
+    }
+}
+
+/* Animaciones */
+.form-section {
+    animation: slideInUp 0.6s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estados de carga */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Estilos para campos requeridos */
+.form-group label::after {
+    content: " *";
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.form-group label:not([for*="modelo_vehiculo"]):not([for*="patente"]):not([for*="observaciones"])::after {
+    content: " *";
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* Mejoras visuales para selects */
+.form-group select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+/* Efectos hover para secciones */
+.form-section:hover {
+    border-color: #667eea;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Estados de verificación de disponibilidad */
+.verificando-disponibilidad {
+    background: #fff3cd;
+    color: #856404;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid #ffeaa7;
+    animation: pulse 1.5s infinite;
+}
+
+.sin-disponibilidad {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid #f5c6cb;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+/* Mejoras para selects deshabilitados */
+.form-group select:disabled {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Indicador de carga para selects */
+.form-group select:disabled option:first-child {
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Estilos para cálculo automático de precio */
+.calculando-precio {
+    background-color: #fff3cd !important;
+    border-color: #ffeaa7 !important;
+    color: #856404 !important;
+}
+
+.calculando-precio-mensaje {
+    background: #fff3cd;
+    color: #856404;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid #ffeaa7;
+    animation: pulse 1.5s infinite;
+}
+
+.precio-calculado {
+    background: #d4edda;
+    color: #155724;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid #c3e6cb;
+}
+
+/* Estilos para campos de solo lectura */
+.form-group input[readonly] {
+    background-color: #f8f9fa;
+    color: #495057;
+    cursor: default;
+}
+
+.form-group input[readonly]:focus {
+    border-color: #ced4da;
+    box-shadow: none;
+}
+
+/* Estilos para información de cantidades disponibles */
+.cantidades-info {
+    background: #e7f3ff;
+    color: #004085;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid #b3d7ff;
+}
+
+/* Mejoras para el select de cantidades */
+.form-group select:disabled {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+.form-group select:disabled option:first-child {
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Mejoras responsive para selects */
+@media (max-width: 360px) {
+    .form-group select {
+        background-position: right 8px center;
+        background-size: 14px;
+        padding-right: 35px;
+    }
+    
+    /* Asegurar que los selects no se corten */
+    .form-group select option {
+        padding: 8px;
+        font-size: 0.85rem;
+    }
+    
+    /* Mejorar campos de fecha en móviles */
+    .form-group input[type="date"] {
+        font-size: 0.85rem;
+        padding: 8px 10px;
+    }
+    
+    /* Asegurar que los inputs no se desborden */
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        box-sizing: border-box;
+        min-width: 0;
+    }
+}
+
+/* Estilos para información de método de pago */
+.metodo-pago-info {
+    background: #fff3cd;
+    color: #856404;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid #ffeaa7;
+}
+
+/* Estilos para información de descuento */
+.descuento-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid #bee5eb;
+}
+
+/* Estilos para información de noches */
+.noches-info {
+    background: #e7f3ff;
+    color: #004085;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-top: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: 1px solid #b3d7ff;
+    text-align: center;
+}
+
+/* Estilos para desglose de precio */
+.desglose-precio {
+    background: #f8f9fa;
+    color: #495057;
+    padding: 6px 10px;
+    border-radius: 4px;
+    margin-top: 6px;
+    font-size: 0.8rem;
+    border: 1px solid #dee2e6;
+}
+
+/* Estilos para campos readonly */
+.readonly-field {
+    background-color: #f8f9fa !important;
+    color: #6c757d !important;
+    cursor: not-allowed !important;
+    border: 1px solid #dee2e6 !important;
+}
+
+.readonly-field:focus {
+    box-shadow: none !important;
+    border-color: #dee2e6 !important;
+}
+
+/* Estilos adicionales para dispositivos muy pequeños */
+@media (max-width: 360px) {
+    /* Asegurar que el body no tenga scroll horizontal */
+    body {
+        overflow-x: hidden;
+    }
+    
+    /* Mejorar la visualización del formulario */
+    .reserva-rapida-form {
+        margin: 0;
+        border-radius: 8px;
+    }
+    
+    /* Ajustar el grid principal para móviles muy pequeños */
+    .form-grid {
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+    
+    /* Mejorar la visualización de los botones */
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .btn-principal,
+    .btn-secundario {
+        width: 100%;
+        margin: 0;
+    }
+    
+    /* Ajustar el panel de información */
+    .info-panel {
+        margin-top: 10px;
+    }
+    
+    /* Mejorar la visualización de los mensajes */
+    .cliente-existente,
+    .verificando-disponibilidad,
+    .sin-disponibilidad,
+    .calculando-precio-mensaje,
+    .precio-calculado,
+    .cantidades-info,
+    .metodo-pago-info,
+    .descuento-info,
+    .noches-info {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+}
+
+/* Estilos globales para prevenir desbordamiento en todas las resoluciones */
+@media (max-width: 1200px) {
+    .reserva-rapida-container {
+        overflow-x: hidden;
+    }
+    
+    .reserva-rapida-form {
+        overflow-x: hidden;
+    }
+    
+    .form-section {
+        overflow-x: hidden;
+    }
+    
+    /* Asegurar que todos los elementos respeten el ancho del contenedor */
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    /* Prevenir que los botones se desborden */
+    .btn-principal,
+    .btn-secundario {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+}

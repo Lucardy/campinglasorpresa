@@ -1,0 +1,85 @@
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+
+.nav-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.back-button {
+    background-color: #f1f5f9;
+    color: #64748b;
+}
+
+.back-button:hover:not(:disabled) {
+    background-color: #e2e8f0;
+    color: #475569;
+}
+
+.next-button {
+    background-color: #3b82f6;
+    color: white;
+    margin-left: auto;
+}
+
+.next-button:hover:not(:disabled) {
+    background-color: #2563eb;
+}
+
+.submit-button {
+    background-color: #10b981;
+    color: white;
+    margin-left: auto;
+}
+
+.submit-button:hover:not(:disabled) {
+    background-color: #059669;
+}
+
+.loading-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 768px) {
+    .navigation-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .nav-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .next-button,
+    .submit-button {
+        margin-left: 0;
+    }
+} 

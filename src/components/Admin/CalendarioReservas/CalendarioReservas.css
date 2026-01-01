@@ -1,0 +1,856 @@
+.calendario-container {
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.calendario-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.calendario-header h2 {
+    margin: 0;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.filtros-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.filtros-titulo {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.filtros-opciones {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filtro-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    background-color: white;
+    color: #495057;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filtro-btn:hover {
+    background-color: #f8f9fa;
+}
+
+.filtro-btn.activo {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+
+.color-box {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+}
+
+/* Estilos generales del calendario */
+.fc {
+    font-family: inherit;
+}
+
+.fc .fc-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    background-color: #4a90e2;
+    border-color: #4a90e2;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.fc .fc-button:hover {
+    background-color: #357abd;
+    border-color: #357abd;
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active {
+    background-color: #357abd;
+    border-color: #357abd;
+}
+
+/* Estilos de eventos */
+.fc-event {
+    border-radius: 4px;
+    padding: 2px 4px;
+    margin: 1px 0;
+    cursor: pointer;
+    border: none;
+    font-size: 0.85rem;
+}
+
+.fc-event:hover {
+    filter: brightness(0.95);
+}
+
+.fc-event-content {
+    padding: 2px 4px;
+}
+
+.cliente-nombre {
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.alojamiento-tipo {
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+/* Estilos para el botón "más eventos" */
+.fc-daygrid-more-link {
+    background-color: #f8f9fa;
+    color: #4a90e2;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-top: 2px;
+}
+
+.fc-daygrid-more-link:hover {
+    background-color: #e9ecef;
+    text-decoration: none;
+}
+
+/* Estilos para el popup de eventos */
+.fc-popover {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.fc-popover-header {
+    background-color: #f8f9fa;
+    padding: 8px 12px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.fc-popover-body {
+    padding: 8px;
+}
+
+.fc-popover .fc-event {
+    margin: 4px 0;
+    padding: 4px 8px;
+}
+
+/* Tooltip */
+.evento-tooltip {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    z-index: 1000;
+    pointer-events: none;
+    white-space: nowrap;
+    display: none;
+}
+
+.fc-event:hover .evento-tooltip {
+    display: block;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .calendario-container {
+        padding: 0.5rem;
+    }
+
+    .calendario-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+
+    .calendario-header h2 {
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .fc .fc-toolbar {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .fc .fc-toolbar-title {
+        font-size: 1.2rem !important;
+    }
+
+    .fc .fc-button {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+
+    .fc-event {
+        font-size: 0.75rem;
+        padding: 1px 3px;
+    }
+
+    .fc-event-content {
+        padding: 1px 3px;
+    }
+
+    .cliente-nombre {
+        font-size: 0.75rem;
+    }
+
+    .alojamiento-tipo {
+        font-size: 0.7rem;
+    }
+
+    .fc-daygrid-more-link {
+        font-size: 0.7rem;
+        padding: 1px 4px;
+    }
+
+    .fc-popover {
+        max-width: 90vw;
+    }
+
+    .fc-popover .fc-event {
+        font-size: 0.75rem;
+        padding: 3px 6px;
+    }
+
+    .evento-tooltip {
+        font-size: 0.7rem;
+        padding: 6px;
+    }
+}
+
+/* Estilos para tablets */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .calendario-container {
+        padding: 0.75rem;
+    }
+
+    .fc .fc-toolbar-title {
+        font-size: 1.3rem !important;
+    }
+
+    .fc-event {
+        font-size: 0.8rem;
+    }
+}
+
+/* Estilos para el detalle de la reserva */
+.reserva-detalle {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.reserva-detalle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.reserva-detalle-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.5rem;
+}
+
+.cerrar-detalle {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: #666;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: color 0.2s;
+}
+
+.cerrar-detalle:hover {
+    color: #e74c3c;
+}
+
+.detalle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.detalle-seccion {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+.detalle-seccion-pagos {
+    grid-column: 1 / -1;
+    background: transparent;
+    padding: 0;
+}
+
+.detalle-seccion h4 {
+    margin: 0 0 1rem 0;
+    color: #2c3e50;
+    font-size: 1.1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #3498db;
+}
+
+.detalle-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+    background: white;
+    border-radius: 4px;
+}
+
+.detalle-item:last-child {
+    margin-bottom: 0;
+}
+
+.detalle-item strong {
+    color: #666;
+    font-weight: 600;
+}
+
+.detalle-item span {
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.estado-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.estado-pendiente {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.estado-confirmada {
+    background: #d4edda;
+    color: #155724;
+}
+
+.estado-cancelada {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.monto-total {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #27ae60;
+}
+
+.descuento-info {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #e74c3c;
+}
+
+.observaciones {
+    grid-column: 1 / -1;
+}
+
+.observaciones .detalle-item {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 0;
+}
+
+.observaciones span {
+    color: #666;
+    font-style: italic;
+    line-height: 1.4;
+}
+
+/* Acciones en detalle */
+.detalle-acciones {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.btn-eliminar-reserva {
+    appearance: none;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    background: linear-gradient(180deg, #ff6b6b, #e63946);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(230,57,70,0.3);
+    transition: transform 0.1s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-eliminar-reserva:hover {
+    filter: brightness(0.98);
+    box-shadow: 0 6px 14px rgba(230,57,70,0.35);
+}
+
+.btn-eliminar-reserva:active {
+    transform: translateY(1px);
+    box-shadow: 0 3px 8px rgba(230,57,70,0.3);
+}
+
+.btn-eliminar-reserva::before {
+    content: "\1F5D1"; /* 🗑 */
+    font-size: 16px;
+}
+
+.btn-extend-reserva {
+    appearance: none;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    background: linear-gradient(180deg, #6bcB77, #2ea44f);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(46,164,79,0.25);
+    transition: transform 0.1s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-extend-reserva:hover {
+    filter: brightness(0.98);
+    box-shadow: 0 6px 14px rgba(46,164,79,0.3);
+}
+
+.btn-extend-reserva:active {
+    transform: translateY(1px);
+    box-shadow: 0 3px 8px rgba(46,164,79,0.25);
+}
+
+.btn-extend-reserva::before {
+    content: "+";
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.btn-editar-reserva {
+    appearance: none;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    background: linear-gradient(180deg, #4a90e2, #357abd);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(53,122,189,0.25);
+    transition: transform 0.1s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-editar-reserva:hover {
+    filter: brightness(0.98);
+    box-shadow: 0 6px 14px rgba(53,122,189,0.3);
+}
+
+.btn-editar-reserva:active {
+    transform: translateY(1px);
+    box-shadow: 0 3px 8px rgba(53,122,189,0.25);
+}
+
+/* Mensajes de carga y error */
+.loading-message,
+.error-message {
+    text-align: center;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+}
+
+.loading-message {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+/* Responsive */
+@media (min-width: 1200px) {
+    .calendario-container {
+        padding: 30px;
+    }
+
+    .detalle-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .observaciones {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Estilos para el modal de eventos múltiples */
+.fc-more-popover {
+    max-height: 80vh !important;
+    width: 300px !important;
+    max-width: 90vw !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    background: white !important;
+    border: none !important;
+    z-index: 99999 !important;
+}
+
+.fc-more-popover::before {
+    z-index: 99998 !important;
+}
+
+.fc-more-popover .fc-popover-header,
+.fc-more-popover .fc-popover-body {
+    position: relative;
+    z-index: 99999 !important;
+}
+
+.fc-more-popover .fc-popover-header {
+    padding: 8px 12px !important;
+    background: #f8f9fa !important;
+    border-bottom: 1px solid #dee2e6 !important;
+    border-radius: 8px 8px 0 0 !important;
+}
+
+.fc-more-popover .fc-popover-title {
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    color: #2c3e50 !important;
+}
+
+.fc-more-popover .fc-popover-close {
+    font-size: 1.2rem !important;
+    color: #666 !important;
+    padding: 4px !important;
+    margin-right: 4px !important;
+}
+
+.fc-more-popover .fc-popover-body {
+    padding: 0 !important;
+    max-height: calc(80vh - 40px) !important;
+    overflow-y: auto !important;
+}
+
+.fc-more-popover .fc-event {
+    margin: 4px 8px !important;
+    padding: 6px 8px !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    transition: transform 0.2s ease !important;
+}
+
+.fc-more-popover .fc-event:hover {
+    transform: translateX(4px) !important;
+}
+
+.fc-more-popover .fc-event-content {
+    padding: 0 !important;
+}
+
+.fc-more-popover .fc-event-time {
+    font-size: 0.8rem !important;
+    opacity: 0.8 !important;
+    margin-bottom: 2px !important;
+}
+
+.fc-more-popover .fc-event-title {
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+}
+
+/* Estilos para el botón Agregar Pago en el calendario */
+.btn-agregar-pago-calendario {
+    appearance: none;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    background: linear-gradient(180deg, #28a745, #20c997);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(40, 167, 69, 0.25);
+    transition: transform 0.1s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-agregar-pago-calendario:hover {
+    filter: brightness(0.98);
+    box-shadow: 0 6px 14px rgba(40, 167, 69, 0.3);
+}
+
+.btn-agregar-pago-calendario:active {
+    transform: translateY(1px);
+    box-shadow: 0 3px 8px rgba(40, 167, 69, 0.25);
+}
+
+/* Estilos para el modal de agregar pago */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    padding: 20px;
+}
+
+.modal-content-agregar-pago {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.modal-header-agregar-pago {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #e1e5e9;
+}
+
+.modal-header-agregar-pago h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #666;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close:hover {
+    color: #e74c3c;
+}
+
+.modal-body-agregar-pago {
+    padding: 20px;
+}
+
+.resumen-pago-info {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #e1e5e9;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-item span {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.info-item strong {
+    color: #2c3e50;
+    font-size: 1.1rem;
+}
+
+.info-item strong.falta {
+    color: #dc3545;
+}
+
+.info-item strong.completo {
+    color: #28a745;
+}
+
+.modal-body-agregar-pago .form-group {
+    margin-bottom: 20px;
+}
+
+.modal-body-agregar-pago .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.modal-body-agregar-pago .form-group input,
+.modal-body-agregar-pago .form-group select,
+.modal-body-agregar-pago .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #e1e5e9;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.modal-body-agregar-pago .form-group input:focus,
+.modal-body-agregar-pago .form-group select:focus,
+.modal-body-agregar-pago .form-group textarea:focus {
+    outline: none;
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+}
+
+.modal-body-agregar-pago .form-group small {
+    display: block;
+    margin-top: 5px;
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+.modal-body-agregar-pago .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #e1e5e9;
+}
+
+.modal-body-agregar-pago .btn-cancelar {
+    padding: 10px 20px;
+    border: 2px solid #6c757d;
+    background: white;
+    color: #6c757d;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.modal-body-agregar-pago .btn-cancelar:hover {
+    background: #6c757d;
+    color: white;
+}
+
+.modal-body-agregar-pago .btn-guardar {
+    padding: 10px 20px;
+    border: none;
+    background: linear-gradient(180deg, #28a745, #20c997);
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(40, 167, 69, 0.25);
+}
+
+.modal-body-agregar-pago .btn-guardar:hover:not(:disabled) {
+    box-shadow: 0 6px 14px rgba(40, 167, 69, 0.3);
+    transform: translateY(-1px);
+}
+
+.modal-body-agregar-pago .btn-guardar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Responsive para el modal */
+@media (max-width: 768px) {
+    .modal-content-agregar-pago {
+        max-width: 95%;
+        margin: 10px;
+    }
+
+    .modal-header-agregar-pago {
+        padding: 15px;
+    }
+
+    .modal-header-agregar-pago h3 {
+        font-size: 1.1rem;
+    }
+
+    .modal-body-agregar-pago {
+        padding: 15px;
+    }
+
+    .detalle-acciones {
+        flex-wrap: wrap;
+    }
+
+    .btn-agregar-pago-calendario,
+    .btn-editar-reserva,
+    .btn-extend-reserva,
+    .btn-eliminar-reserva {
+        flex: 1;
+        min-width: 120px;
+    }
+} 

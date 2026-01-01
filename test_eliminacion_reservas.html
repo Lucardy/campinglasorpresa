@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Eliminación de Reservas - Camping La Sorpresa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { border-color: #28a745; background-color: #d4edda; }
+        .error { border-color: #dc3545; background-color: #f8d7da; }
+        .info { border-color: #17a2b8; background-color: #d1ecf1; }
+        .warning { border-color: #ffc107; background-color: #fff3cd; }
+        
+        .error-details {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .fix-details {
+            background: #e7f3ff;
+            border: 1px solid #b3d7ff;
+            color: #004085;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .code-changes {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        
+        .test-steps {
+            counter-reset: step-counter;
+        }
+        
+        .test-steps li {
+            counter-increment: step-counter;
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .test-steps li:before {
+            content: "Paso " counter(step-counter) ": ";
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        .props-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .props-before, .props-after {
+            padding: 15px;
+            border-radius: 5px;
+        }
+        
+        .props-before {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .props-after {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗑️ Test Eliminación de Reservas</h1>
+        <p>Verificación del problema y solución implementada</p>
+        
+        <div class="test-section error">
+            <h3>❌ Problema Identificado</h3>
+            <p><strong>Error:</strong> <code>TypeError: onDelete is not a function</code></p>
+            <p><strong>Ubicación:</strong> <code>ReservasList.jsx:154:19</code></p>
+            <p><strong>Causa:</strong> La función <code>onDelete</code> no se estaba pasando como prop al componente <code>ReservasList</code></p>
+        </div>
+
+        <div class="error-details">
+<strong>Error en consola:</strong>
+ReservasList.jsx:157 Error al eliminar reserva: TypeError: onDelete is not a function
+    at handleDelete (ReservasList.jsx:154:19)
+    at onClick (ReservasList.jsx:378:64)
+
+<strong>Flujo del error:</strong>
+1. Usuario hace clic en botón "Eliminar" de una reserva
+2. Se ejecuta handleDelete(id) en ReservasList.jsx
+3. Se intenta llamar onDelete(id)
+4. onDelete es undefined porque no se pasó como prop
+5. Error: "onDelete is not a function"
+        </div>
+
+        <div class="test-section success">
+            <h3>✅ Solución Implementada</h3>
+            <p><strong>Archivo modificado:</strong> <code>src/components/Admin/Admin.jsx</code></p>
+            
+            <div class="props-comparison">
+                <div class="props-before">
+                    <h4>❌ ANTES (Props faltantes)</h4>
+                    <div class="code-changes">
+&lt;ReservasList 
+    reservas={reservas}
+    onRefresh={forceReload}
+    onUpdate={handleUpdateReserva}
+/&gt;
+                    </div>
+                    <p><strong>Problema:</strong> Falta la prop <code>onDelete</code></p>
+                </div>
+                
+                <div class="props-after">
+                    <h4>✅ DESPUÉS (Props completas)</h4>
+                    <div class="code-changes">
+&lt;ReservasList 
+    reservas={reservas}
+    onRefresh={forceReload}
+    onUpdate={handleUpdateReserva}
+    onDelete={handleDeleteReserva}
+/&gt;
+                    </div>
+                    <p><strong>Solución:</strong> Agregada la prop <code>onDelete={handleDeleteReserva}</code></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="fix-details">
+            <h3>🔍 Análisis del Problema</h3>
+            <p><strong>Componente ReservasList esperaba estas props:</strong></p>
+            <ul>
+                <li>✅ <code>reservas</code> - Lista de reservas</li>
+                <li>✅ <code>onRefresh</code> - Función para refrescar</li>
+                <li>✅ <code>onUpdate</code> - Función para actualizar</li>
+                <li>❌ <code>onDelete</code> - Función para eliminar (FALTABA)</li>
+            </ul>
+            
+            <p><strong>El componente Admin tenía disponible:</strong></p>
+            <ul>
+                <li>✅ <code>handleDeleteReserva</code> - Función para eliminar reservas</li>
+                <li>❌ <strong>No se estaba pasando</strong> como prop <code>onDelete</code></li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 Pasos para Probar la Solución</h3>
+            <ol class="test-steps">
+                <li><strong>Navegar a Reservas:</strong> Ir a <code>/admin/reservas</code></li>
+                <li><strong>Verificar lista:</strong> Debe mostrar las reservas existentes</li>
+                <li><strong>Hacer clic en "Eliminar":</strong> En cualquier reserva</li>
+                <li><strong>Confirmar eliminación:</strong> En el diálogo de confirmación</li>
+                <li><strong>Verificar resultado:</strong> La reserva debe eliminarse de la lista</li>
+                <li><strong>Verificar notificación:</strong> Debe aparecer "Reserva eliminada exitosamente"</li>
+            </ol>
+        </div>
+
+        <div class="test-section success">
+            <h3>📊 Flujo Corregido</h3>
+            <div class="code-changes">
+1. Usuario hace clic en "Eliminar" → handleDelete(id)
+2. Se ejecuta onDelete(id) → handleDeleteReserva(id)
+3. Se muestra confirmación → "¿Está seguro de eliminar?"
+4. Usuario confirma → Se envía DELETE a la API
+5. API elimina la reserva → Respuesta exitosa
+6. Se actualiza la lista → Reserva desaparece
+7. Se muestra notificación → "Reserva eliminada exitosamente"
+            </div>
+        </div>
+
+        <div class="test-section warning">
+            <h3>⚠️ Verificaciones Importantes</h3>
+            <ul>
+                <li><strong>Consola del navegador:</strong> No debe aparecer el error "onDelete is not a function"</li>
+                <li><strong>Confirmación:</strong> Debe aparecer el diálogo de confirmación</li>
+                <li><strong>API:</strong> Debe enviarse la petición DELETE a <code>/reservas.php?id=X</code></li>
+                <li><strong>Lista:</strong> La reserva debe desaparecer de la lista</li>
+                <li><strong>Notificación:</strong> Debe aparecer "Reserva eliminada exitosamente"</li>
+                <li><strong>Base de datos:</strong> La reserva debe eliminarse de la base de datos</li>
+            </ul>
+        </div>
+
+        <div class="test-section info">
+            <h3>🔧 Funciones Relacionadas</h3>
+            <p><strong>En useAdmin.js:</strong></p>
+            <div class="code-changes">
+handleDeleteReserva(id) {
+    // 1. Mostrar confirmación
+    // 2. Enviar DELETE a /reservas.php?id=X
+    // 3. Actualizar lista de reservas
+    // 4. Mostrar notificación
+}
+            </div>
+            
+            <p><strong>En ReservasList.jsx:</strong></p>
+            <div class="code-changes">
+handleDelete(id) {
+    // 1. Llamar onDelete(id) → handleDeleteReserva(id)
+    // 2. Mostrar notificación de éxito
+    // 3. Manejar errores si los hay
+}
+            </div>
+        </div>
+
+        <div class="test-section success">
+            <h3>🎯 Resultado Esperado</h3>
+            <p><strong>Después de la corrección:</strong></p>
+            <ul>
+                <li>✅ No hay errores en la consola</li>
+                <li>✅ El botón "Eliminar" funciona correctamente</li>
+                <li>✅ Aparece el diálogo de confirmación</li>
+                <li>✅ La reserva se elimina de la lista</li>
+                <li>✅ Se muestra notificación de éxito</li>
+                <li>✅ La base de datos se actualiza correctamente</li>
+            </ul>
+        </div>
+
+        <div class="test-section info">
+            <h3>🔍 Debugging Adicional</h3>
+            <p><strong>Si el problema persiste, verificar:</strong></p>
+            <ul>
+                <li>Que <code>handleDeleteReserva</code> esté definido en <code>useAdmin.js</code></li>
+                <li>Que se esté exportando correctamente desde <code>useAdmin</code></li>
+                <li>Que no haya errores de sintaxis en <code>Admin.jsx</code></li>
+                <li>Que la función <code>onDelete</code> se esté recibiendo correctamente en <code>ReservasList</code></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Auto-ejecutar al cargar la página
+        window.addEventListener('load', () => {
+            console.log('🗑️ Test Eliminación de Reservas');
+            console.log('❌ Problema identificado: onDelete no se pasaba como prop');
+            console.log('✅ Solución implementada: Agregada prop onDelete={handleDeleteReserva}');
+            console.log('🧪 Listo para probar en el navegador');
+            
+            // Simular el flujo corregido
+            setTimeout(() => {
+                console.log('🔄 Simulando flujo corregido:');
+                console.log('  1. Usuario hace clic en "Eliminar"');
+                console.log('  2. handleDelete(id) ejecuta onDelete(id)');
+                console.log('  3. handleDeleteReserva(id) procesa la eliminación');
+                console.log('  4. ✅ Reserva eliminada exitosamente');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

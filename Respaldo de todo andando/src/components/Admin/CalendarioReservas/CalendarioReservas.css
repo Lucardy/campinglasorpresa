@@ -1,0 +1,336 @@
+.calendario-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px 0;
+    width: 100%;
+    max-width: 100%;
+}
+
+.calendario-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.calendario-header h2 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.5rem;
+}
+
+.filtros-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.filtros-titulo {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.filtros-opciones {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filtro-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    background-color: white;
+    color: #495057;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filtro-btn:hover {
+    background-color: #f8f9fa;
+}
+
+.filtro-btn.activo {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+
+.color-box {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+}
+
+.calendario-wrapper {
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Estilos para el calendario de FullCalendar */
+.fc {
+    font-family: inherit;
+}
+
+.fc .fc-toolbar {
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 20px !important;
+}
+
+.fc .fc-button {
+    background-color: #4a90e2 !important;
+    border-color: #4a90e2 !important;
+    padding: 8px 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.fc .fc-button:hover {
+    background-color: #357abd !important;
+    border-color: #357abd !important;
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active {
+    background-color: #357abd !important;
+    border-color: #357abd !important;
+}
+
+.fc .fc-daygrid-day {
+    transition: background-color 0.3s ease;
+}
+
+.fc .fc-daygrid-day:hover {
+    background-color: #f8f9fa;
+}
+
+.fc .fc-event {
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    margin: 1px 0;
+}
+
+.fc-event-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.fc-event-content .cliente-nombre {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fc-event-content .alojamiento-tipo {
+    font-size: 0.9em;
+    opacity: 0.9;
+}
+
+/* Estilos para el detalle de la reserva */
+.reserva-detalle {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.reserva-detalle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.reserva-detalle-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.5rem;
+}
+
+.cerrar-detalle {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: #666;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: color 0.2s;
+}
+
+.cerrar-detalle:hover {
+    color: #e74c3c;
+}
+
+.detalle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.detalle-seccion {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+.detalle-seccion h4 {
+    margin: 0 0 1rem 0;
+    color: #2c3e50;
+    font-size: 1.1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #3498db;
+}
+
+.detalle-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+    background: white;
+    border-radius: 4px;
+}
+
+.detalle-item:last-child {
+    margin-bottom: 0;
+}
+
+.detalle-item strong {
+    color: #666;
+    font-weight: 600;
+}
+
+.detalle-item span {
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.estado-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.estado-pendiente {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.estado-confirmada {
+    background: #d4edda;
+    color: #155724;
+}
+
+.estado-cancelada {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.monto-total {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #27ae60;
+}
+
+.observaciones {
+    grid-column: 1 / -1;
+}
+
+.observaciones .detalle-item {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 0;
+}
+
+.observaciones span {
+    color: #666;
+    font-style: italic;
+    line-height: 1.4;
+}
+
+/* Mensajes de carga y error */
+.loading-message,
+.error-message {
+    text-align: center;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+}
+
+.loading-message {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+/* Responsive */
+@media (min-width: 1200px) {
+    .calendario-container {
+        padding: 30px;
+    }
+
+    .detalle-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .observaciones {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .calendario-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .filtros-container {
+        width: 100%;
+    }
+
+    .filtros-opciones {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .fc .fc-toolbar {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .fc .fc-toolbar-chunk {
+        display: flex;
+        gap: 5px;
+    }
+
+    .detalle-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .fc-event-content {
+        font-size: 0.8em;
+    }
+} 

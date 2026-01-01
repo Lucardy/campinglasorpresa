@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API Producción - Camping La Sorpresa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .url-info {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Test API Producción - Camping La Sorpresa</h1>
+        
+        <div class="url-info">
+            <strong>🌍 Información del Entorno:</strong><br>
+            Hostname: <span id="hostname"></span><br>
+            URL Completa: <span id="fullUrl"></span><br>
+            Es Local: <span id="isLocal"></span>
+        </div>
+
+        <div class="test-section">
+            <h3>🔗 Test 1: Tipos de Hospedaje</h3>
+            <button onclick="testTiposHospedaje()">Probar Cargar Tipos de Hospedaje</button>
+            <div id="result1"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔗 Test 2: Cantidades de Personas</h3>
+            <button onclick="testCantidadesPersonas()">Probar Cantidades de Personas</button>
+            <div id="result2"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔗 Test 3: Precios de Camping</h3>
+            <button onclick="testPreciosCamping()">Probar Precios de Camping</button>
+            <div id="result3"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔗 Test 4: Disponibilidad</h3>
+            <button onclick="testDisponibilidad()">Probar Verificación de Disponibilidad</button>
+            <div id="result4"></div>
+        </div>
+    </div>
+
+    <script>
+        // Mostrar información del entorno
+        document.getElementById('hostname').textContent = window.location.hostname;
+        document.getElementById('fullUrl').textContent = window.location.href;
+        document.getElementById('isLocal').textContent = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'Sí' : 'No';
+
+        // Función para obtener la URL de la API según el entorno
+        function getApiUrl(endpoint, params = '') {
+            const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            
+            if (isLocalDev) {
+                return `http://localhost/campinglasorpresa/api/endpoints/${endpoint}${params}`;
+            } else {
+                // En producción, usar la estructura completa con endpoints
+                return `/api/endpoints/${endpoint}${params}`;
+            }
+        }
+
+        // Función para mostrar resultados
+        function showResult(elementId, success, message, data = null) {
+            const element = document.getElementById(elementId);
+            element.className = success ? 'success' : 'error';
+            element.innerHTML = `
+                <strong>${success ? '✅ Éxito' : '❌ Error'}:</strong> ${message}
+                ${data ? `<pre>${JSON.stringify(data, null, 2)}</pre>` : ''}
+            `;
+        }
+
+        // Test 1: Tipos de Hospedaje
+        async function testTiposHospedaje() {
+            try {
+                const apiUrl = getApiUrl('hospedajes.php');
+                console.log('🔗 Probando URL:', apiUrl);
+                
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                console.log('📡 Status:', response.status);
+                console.log('📡 Headers:', response.headers);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ Error:', errorText);
+                    showResult('result1', false, `HTTP ${response.status}: ${errorText}`);
+                    return;
+                }
+                
+                const data = await response.json();
+                console.log('📊 Datos recibidos:', data);
+                
+                if (data.success && data.tipos_hospedaje) {
+                    showResult('result1', true, `Se cargaron ${data.tipos_hospedaje.length} tipos de hospedaje`, data);
+                } else {
+                    showResult('result1', false, 'La respuesta no contiene tipos de hospedaje válidos', data);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error en test:', error);
+                showResult('result1', false, `Error: ${error.message}`);
+            }
+        }
+
+        // Test 2: Cantidades de Personas
+        async function testCantidadesPersonas() {
+            try {
+                const apiUrl = getApiUrl('hospedajes.php', '?cantidades_personas=1&tipo_hospedaje_id=1');
+                console.log('🔗 Probando URL:', apiUrl);
+                
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    showResult('result2', false, `HTTP ${response.status}: ${errorText}`);
+                    return;
+                }
+                
+                const data = await response.json();
+                console.log('📊 Datos recibidos:', data);
+                
+                if (data.success && data.cantidades) {
+                    showResult('result2', true, `Se cargaron ${data.cantidades.length} cantidades disponibles`, data);
+                } else {
+                    showResult('result2', false, 'La respuesta no contiene cantidades válidas', data);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error en test:', error);
+                showResult('result2', false, `Error: ${error.message}`);
+            }
+        }
+
+        // Test 3: Precios de Camping
+        async function testPreciosCamping() {
+            try {
+                const apiUrl = getApiUrl('hospedajes.php', '?precios_camping&metodo_pago=efectivo');
+                console.log('🔗 Probando URL:', apiUrl);
+                
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    showResult('result3', false, `HTTP ${response.status}: ${errorText}`);
+                    return;
+                }
+                
+                const data = await response.json();
+                console.log('📊 Datos recibidos:', data);
+                
+                if (data.success && data.precios) {
+                    showResult('result3', true, 'Precios de camping cargados correctamente', data);
+                } else {
+                    showResult('result3', false, 'La respuesta no contiene precios válidos', data);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error en test:', error);
+                showResult('result3', false, `Error: ${error.message}`);
+            }
+        }
+
+        // Test 4: Disponibilidad
+        async function testDisponibilidad() {
+            try {
+                const apiUrl = getApiUrl('hospedajes.php', '?disponibilidad=1&tipo_hospedaje_id=1&fecha_entrada=2025-09-04&fecha_salida=2025-09-09');
+                console.log('🔗 Probando URL:', apiUrl);
+                
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    showResult('result4', false, `HTTP ${response.status}: ${errorText}`);
+                    return;
+                }
+                
+                const data = await response.json();
+                console.log('📊 Datos recibidos:', data);
+                
+                if (data.success && data.hospedajes) {
+                    showResult('result4', true, `Se encontraron ${data.hospedajes.length} hospedajes disponibles`, data);
+                } else {
+                    showResult('result4', false, 'La respuesta no contiene hospedajes válidos', data);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error en test:', error);
+                showResult('result4', false, `Error: ${error.message}`);
+            }
+        }
+
+        // Ejecutar test automáticamente al cargar
+        window.addEventListener('load', () => {
+            console.log('🚀 Página cargada, ejecutando test automático...');
+            testTiposHospedaje();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+.paso-detalles {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: #2c3e50;
+    font-size: 1rem;
+}
+
+.input-field {
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background: #f8fafc;
+    color: #1e293b;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+    background: #fff;
+}
+
+.select-input {
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background: #f8fafc;
+    color: #1e293b;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.select-input:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+    background: #fff;
+}
+
+.resumen-reserva {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+.resumen-reserva h3 {
+    color: #2c3e50;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.resumen-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.resumen-item:last-child {
+    border-bottom: none;
+}
+
+.resumen-label {
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+.resumen-value {
+    color: #1e293b;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.resumen-total {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid #e2e8f0;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .paso-detalles {
+        gap: 1.5rem;
+    }
+
+    .form-group label {
+        font-size: 0.95rem;
+    }
+
+    .input-field,
+    .select-input {
+        font-size: 0.9rem;
+        padding: 0.6rem 0.8rem;
+    }
+
+    .resumen-reserva {
+        padding: 1.2rem;
+    }
+
+    .resumen-reserva h3 {
+        font-size: 1.1rem;
+    }
+
+    .resumen-label,
+    .resumen-value {
+        font-size: 0.9rem;
+    }
+
+    .resumen-total {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .paso-detalles {
+        gap: 1rem;
+    }
+
+    .form-group label {
+        font-size: 0.9rem;
+    }
+
+    .input-field,
+    .select-input {
+        font-size: 0.85rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .resumen-reserva {
+        padding: 1rem;
+        margin: 0 -0.75rem;
+        width: calc(100% + 1.5rem);
+        border-radius: 0;
+    }
+
+    .resumen-reserva h3 {
+        font-size: 1rem;
+    }
+
+    .resumen-label,
+    .resumen-value {
+        font-size: 0.85rem;
+    }
+
+    .resumen-total {
+        font-size: 0.95rem;
+    }
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    gap: 1rem;
+}
+
+.btn-back {
+    padding: 0.75rem 1.5rem;
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+    background-color: #e0e0e0;
+}
+
+.btn-next {
+    padding: 0.75rem 1.5rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-next:hover:not(:disabled) {
+    background-color: #45a049;
+}
+
+.btn-next:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.desglose-precio {
+    margin-top: 10px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+}
+
+.desglose-precio p {
+    margin: 0 0 10px 0;
+    font-weight: bold;
+    color: #495057;
+}
+
+.desglose-precio ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.desglose-precio li {
+    margin-bottom: 5px;
+    color: #6c757d;
+    font-size: 0.9em;
+}
+
+.desglose-precio li:last-child {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #dee2e6;
+    font-weight: bold;
+    color: #212529;
+} 

@@ -1,0 +1,549 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.cliente-modal-content {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    max-width: 900px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.cliente-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f9fafb;
+    border-radius: 12px 12px 0 0;
+}
+
+.cliente-modal-header h2 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.cliente-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 12px;
+    border-radius: 50%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    position: relative;
+    overflow: hidden;
+}
+
+.cliente-modal-close::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.cliente-modal-close:hover {
+    color: #ef4444;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.cliente-modal-close:hover::before {
+    opacity: 1;
+}
+
+.cliente-modal-close:active {
+    transform: scale(0.95);
+}
+
+.cliente-modal-close svg {
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s ease;
+}
+
+.cliente-modal-close:hover svg {
+    transform: rotate(90deg);
+}
+
+.cliente-modal-body {
+    padding: 24px;
+}
+
+.cliente-modal-section {
+    margin-bottom: 24px;
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+.cliente-modal-section:last-child {
+    margin-bottom: 0;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 1rem 0;
+    color: #2c3e50;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #3498db;
+}
+
+.section-icon {
+    color: #3498db;
+    font-size: 1.125rem;
+}
+
+.stats-info {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.stats-info p {
+    margin: 0;
+    color: #666;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 12px;
+}
+
+.cliente-modal-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+}
+
+.cliente-modal-item:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border-color: #d1d5db;
+}
+
+.info-icon {
+    color: #6b7280;
+    font-size: 1rem;
+    min-width: 16px;
+}
+
+.info-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.info-content label {
+    font-size: 0.75rem;
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.info-content span {
+    font-size: 0.875rem;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1.25rem;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+}
+
+.stat-item:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    border-color: #3498db;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    word-break: break-word;
+    line-height: 1.2;
+    color: #2c3e50;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: #666;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.reservas-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.reserva-item {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.reserva-item:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-color: #d1d5db;
+}
+
+.reserva-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.reserva-tipo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: #1f2937;
+    text-transform: capitalize;
+}
+
+.reserva-icon {
+    color: #3b82f6;
+}
+
+.reserva-estado {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.reserva-details {
+    padding: 1rem;
+}
+
+.reserva-dates {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.date-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+}
+
+.date-icon {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.reserva-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 12px;
+    font-size: 0.875rem;
+}
+
+.reserva-info span {
+    color: #374151;
+}
+
+.reserva-pagos {
+    margin-top: 16px;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+}
+
+.pagos-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 0.875rem;
+}
+
+.pagos-icon {
+    color: #3b82f6;
+    font-size: 1rem;
+}
+
+.estado-pago-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.estado-pago-badge.estado-completo {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.estado-pago-badge.estado-parcial {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.estado-pago-badge.estado-pendiente {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+.pagos-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.pago-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pago-label {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.pago-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.pago-value.falta-pagar {
+    color: #dc2626;
+}
+
+.pago-value.completo {
+    color: #10b981;
+}
+
+.pago-progress {
+    margin-top: 12px;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 8px;
+    background-color: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 6px;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.reserva-observaciones {
+    padding: 12px;
+    background: #fef3c7;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    color: #92400e;
+    border-left: 4px solid #f59e0b;
+    margin-top: 12px;
+}
+
+.loading-message,
+.error-message,
+.no-reservas {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6b7280;
+}
+
+.loading-message {
+    color: #3b82f6;
+    font-weight: 500;
+}
+
+.error-message {
+    color: #ef4444;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.no-reservas {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.no-reservas p {
+    margin: 0;
+    font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .modal-overlay {
+        padding: 10px;
+    }
+
+    .cliente-modal-content {
+        max-height: 95vh;
+    }
+
+    .cliente-modal-header {
+        padding: 16px 20px;
+    }
+
+    .cliente-modal-header h2 {
+        font-size: 1.25rem;
+    }
+
+    .cliente-modal-body {
+        padding: 20px;
+    }
+
+    .cliente-modal-close {
+        width: 40px;
+        height: 40px;
+        padding: 10px;
+        font-size: 1.25rem;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+    }
+    
+    .stat-number {
+        font-size: 1.25rem;
+    }
+    
+    .pagos-details {
+        grid-template-columns: 1fr;
+    }
+    
+    .reserva-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .reserva-info {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .cliente-modal-header {
+        padding: 12px 16px;
+    }
+    
+    .cliente-modal-body {
+        padding: 16px;
+    }
+    
+    .cliente-modal-item {
+        padding: 12px;
+    }
+    
+    .stat-item {
+        padding: 16px;
+    }
+    
+    .reserva-details {
+        padding: 12px;
+    }
+} 

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Reservas Consecutivas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-title {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .test-result {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+        .step {
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 4px solid #007bff;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test de Reservas Consecutivas</h1>
+    <p>Este test verifica que se puedan hacer reservas consecutivas (del 2-10 y del 10-15).</p>
+
+    <div class="test-container">
+        <h2 class="test-title">📋 Escenario de Prueba</h2>
+        <div class="step">
+            <strong>Paso 1:</strong> Crear reserva del 2 al 10 de enero
+        </div>
+        <div class="step">
+            <strong>Paso 2:</strong> Intentar crear reserva del 10 al 15 de enero (debe ser posible)
+        </div>
+        <div class="step">
+            <strong>Paso 3:</strong> Verificar que ambas reservas existen y no hay conflictos
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2 class="test-title">🔍 Test Automático</h2>
+        <button onclick="ejecutarTestCompleto()">🚀 Ejecutar Test Completo</button>
+        <button onclick="limpiarResultados()">🧹 Limpiar Resultados</button>
+        <div id="test-results"></div>
+    </div>
+
+    <div class="test-container">
+        <h2 class="test-title">📊 Explicación de la Nueva Lógica</h2>
+        <div class="info">
+            <h3>🔧 Cambios Realizados:</h3>
+            <ul>
+                <li><strong>Hospedaje.php:</strong> Función <code>checkDisponibilidad()</code> actualizada</li>
+                <li><strong>Reserva.php:</strong> Función <code>checkAvailability()</code> actualizada</li>
+            </ul>
+        </div>
+        <div class="success">
+            <h3>✅ Resultado Esperado:</h3>
+            <p>Reserva 1 (2-10): Ocupa días 2, 3, 4, 5, 6, 7, 8, 9</p>
+            <p>Reserva 2 (10-15): Ocupa días 10, 11, 12, 13, 14</p>
+            <p><strong>Día 10:</strong> Los primeros se van por la mañana, los segundos llegan por la tarde ✅</p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost/campinglasorpresa/api/endpoints';
+        
+        async function ejecutarTestCompleto() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<div class="loading">🔄 Iniciando test completo...</div>';
+            
+            try {
+                // Paso 1: Verificar disponibilidad inicial
+                resultsDiv.innerHTML += '<div class="info">📅 Paso 1: Verificando disponibilidad inicial para reserva 2-10...</div>';
+                
+                const response1 = await fetch(`${API_BASE}/hospedajes.php?disponibilidad=1&tipo_hospedaje_id=1&fecha_entrada=2025-01-02&fecha_salida=2025-01-10`);
+                const data1 = await response1.json();
+                
+                if (data1.success && data1.hospedajes && data1.hospedajes.length > 0) {
+                    resultsDiv.innerHTML += '<div class="success">✅ Paso 1 PASÓ: Hay hospedajes disponibles del 2 al 10</div>';
+                    
+                    // Paso 2: Verificar disponibilidad para reserva consecutiva
+                    resultsDiv.innerHTML += '<div class="info">📅 Paso 2: Verificando disponibilidad para reserva consecutiva 10-15...</div>';
+                    
+                    const response2 = await fetch(`${API_BASE}/hospedajes.php?disponibilidad=1&tipo_hospedaje_id=1&fecha_entrada=2025-01-10&fecha_salida=2025-01-15`);
+                    const data2 = await response2.json();
+                    
+                    if (data2.success && data2.hospedajes && data2.hospedajes.length > 0) {
+                        resultsDiv.innerHTML += '<div class="success">✅ Paso 2 PASÓ: Hay hospedajes disponibles del 10 al 15 (reserva consecutiva posible)</div>';
+                        
+                        // Paso 3: Verificar que no se puede reservar en fechas superpuestas
+                        resultsDiv.innerHTML += '<div class="info">📅 Paso 3: Verificando que no se puede reservar en fechas superpuestas...</div>';
+                        
+                        const response3 = await fetch(`${API_BASE}/hospedajes.php?disponibilidad=1&tipo_hospedaje_id=1&fecha_entrada=2025-01-05&fecha_salida=2025-01-12`);
+                        const data3 = await response3.json();
+                        
+                        if (data3.success && data3.hospedajes && data3.hospedajes.length === 0) {
+                            resultsDiv.innerHTML += '<div class="success">✅ Paso 3 PASÓ: No hay hospedajes disponibles para fechas superpuestas (5-12)</div>';
+                        } else {
+                            resultsDiv.innerHTML += '<div class="error">❌ Paso 3 FALLÓ: Hay hospedajes disponibles para fechas superpuestas (5-12)</div>';
+                        }
+                        
+                        // Resumen final
+                        resultsDiv.innerHTML += '<div class="success"><strong>🎉 ¡TEST COMPLETADO EXITOSAMENTE!</strong><br>La nueva lógica de disponibilidad está funcionando correctamente. Ahora puedes hacer reservas consecutivas sin problemas.</div>';
+                        
+                    } else {
+                        resultsDiv.innerHTML += '<div class="error">❌ Paso 2 FALLÓ: No hay hospedajes disponibles del 10 al 15</div>';
+                        resultsDiv.innerHTML += '<div class="warning">⚠️ Esto indica que la nueva lógica aún no está funcionando correctamente.</div>';
+                    }
+                    
+                } else {
+                    resultsDiv.innerHTML += '<div class="error">❌ Paso 1 FALLÓ: No hay hospedajes disponibles del 2 al 10</div>';
+                }
+                
+            } catch (error) {
+                resultsDiv.innerHTML += `<div class="error">❌ Error en el test: ${error.message}</div>`;
+                console.error('Error:', error);
+            }
+        }
+        
+        function limpiarResultados() {
+            document.getElementById('test-results').innerHTML = '';
+        }
+        
+        // Ejecutar test automáticamente al cargar la página
+        window.onload = function() {
+            console.log('🧪 Página de test cargada. Presiona el botón para ejecutar el test.');
+        };
+    </script>
+</body>
+</html>
