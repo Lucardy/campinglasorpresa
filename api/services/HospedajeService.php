@@ -153,26 +153,10 @@ class HospedajeService {
             try {
                 $fechaEntradaObj = new DateTime($fechaEntrada);
                 $fechaSalidaObj = new DateTime($fechaSalida);
-                $hoy = new DateTime();
                 
-                // Permitir reservar hasta 2 días anteriores (para registrar reservas con retraso)
-                // Además, si es antes de las 6:00am, permitir desde ayer adicional
-                $horaActual = (int)$hoy->format('H');
-                $fechaMinima = clone $hoy;
-                $fechaMinima->setTime(0, 0, 0);
-                
-                // Permitir hasta 2 días anteriores como mínimo
-                $fechaMinima->modify('-2 days');
-                
-                // Si es antes de las 6:00am, permitir un día adicional (hasta 3 días anteriores)
-                if ($horaActual < 6) {
-                    $fechaMinima->modify('-1 day');
-                }
-                
-                // Validar que las fechas sean desde la fecha mínima permitida
-                $fechaEntradaObj->setTime(0, 0, 0);
-                if ($fechaEntradaObj < $fechaMinima) {
-                    throw new Exception('La fecha de entrada no puede ser anterior a ' . $fechaMinima->format('d/m/Y'));
+                // Validar que las fechas tengan formato válido
+                if (!$fechaEntradaObj || !$fechaSalidaObj) {
+                    throw new Exception('Formato de fecha inválido');
                 }
             } catch (Exception $e) {
                 throw new Exception('Formato de fecha inválido: ' . $e->getMessage());

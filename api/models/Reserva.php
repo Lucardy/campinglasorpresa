@@ -493,6 +493,48 @@ class Reserva {
             $stmt->execute($params);
             $reservas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+            // Calcular total_pagado_en_periodo para cada reserva
+            // Esto muestra solo los pagos realizados en el período seleccionado
+            $fechaInicio = !empty($filtros['fecha_inicio']) ? $filtros['fecha_inicio'] : null;
+            $fechaFin = !empty($filtros['fecha_fin']) ? $filtros['fecha_fin'] : null;
+            
+            foreach ($reservas as &$reserva) {
+                $totalPagadoEnPeriodo = 0;
+                
+                // Obtener todos los pagos de esta reserva
+                $stmtPagos = $this->pdo->prepare("
+                    SELECT monto, fecha_pago 
+                    FROM pagos 
+                    WHERE reserva_id = ?
+                ");
+                $stmtPagos->execute([$reserva['reserva_id']]);
+                $pagos = $stmtPagos->fetchAll(PDO::FETCH_ASSOC);
+                
+                // Sumar solo los pagos dentro del período
+                foreach ($pagos as $pago) {
+                    $fechaPago = $pago['fecha_pago'];
+                    $incluirPago = false;
+                    
+                    if ($fechaInicio && $fechaFin) {
+                        $incluirPago = ($fechaPago >= $fechaInicio && $fechaPago <= $fechaFin);
+                    } elseif ($fechaInicio) {
+                        $incluirPago = ($fechaPago >= $fechaInicio);
+                    } elseif ($fechaFin) {
+                        $incluirPago = ($fechaPago <= $fechaFin);
+                    } else {
+                        // Si no hay filtro de fecha, incluir todos los pagos
+                        $incluirPago = true;
+                    }
+                    
+                    if ($incluirPago) {
+                        $totalPagadoEnPeriodo += floatval($pago['monto']);
+                    }
+                }
+                
+                $reserva['total_pagado_en_periodo'] = $totalPagadoEnPeriodo;
+            }
+            unset($reserva); // Liberar referencia
+
             // Filtrar por método de pago si se especifica (a nivel de reserva)
             if (!empty($filtros['metodo_pago']) && $filtros['metodo_pago'] !== 'todos') {
                 $reservasFiltradas = [];
@@ -520,6 +562,7 @@ class Reserva {
     private function calcularEstadisticasPorReserva($reservas, $filtros = []) {
         $totalIngresos = 0;
         $totalPagado = 0;
+        $totalPagadoEnPeriodo = 0; // Nuevo: pagos realizados en el período seleccionado
         $totalPendiente = 0;
         $totalReservas = count($reservas);
         $porMetodoPago = [];
@@ -528,10 +571,12 @@ class Reserva {
         foreach ($reservas as $reserva) {
             $montoTotal = floatval($reserva['monto_total']);
             $montoPagado = floatval($reserva['total_pagado']);
+            $montoPagadoEnPeriodo = floatval($reserva['total_pagado_en_periodo'] ?? 0);
             $montoPendiente = $montoTotal - $montoPagado;
 
             $totalIngresos += $montoTotal;
             $totalPagado += $montoPagado;
+            $totalPagadoEnPeriodo += $montoPagadoEnPeriodo;
             $totalPendiente += $montoPendiente;
 
             // Estadísticas por tipo de hospedaje
@@ -577,7 +622,8 @@ class Reserva {
 
         return [
             'totalIngresos' => $totalIngresos,
-            'totalPagado' => $totalPagado,
+            'totalPagado' => $totalPagado, // Total histórico (todos los pagos de esas reservas)
+            'totalPagadoEnPeriodo' => $totalPagadoEnPeriodo, // Solo pagos en el período seleccionado
             'totalPendiente' => $totalPendiente,
             'totalReservas' => $totalReservas,
             'promedioPorReserva' => $totalReservas > 0 ? $totalIngresos / $totalReservas : 0,

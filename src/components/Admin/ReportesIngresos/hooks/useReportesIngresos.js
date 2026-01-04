@@ -3,6 +3,7 @@ import { notify } from '../../Notifications/NotificationSystem';
 import config from '../../../../config';
 import { calcularTotalProporcional } from '../utils';
 import { debounce } from '../utils/debounce';
+import reservaService from '../../../../services/reservaService';
 
 const useReportesIngresos = () => {
     const [reportes, setReportes] = useState([]); // Pagos reales (por fecha de pago)
@@ -39,17 +40,16 @@ const useReportesIngresos = () => {
             setLoading(true);
             setError(null);
             
-            const params = new URLSearchParams();
-            if (filtros.fechaInicio) params.append('fecha_inicio', filtros.fechaInicio);
-            if (filtros.fechaFin) params.append('fecha_fin', filtros.fechaFin);
-            if (filtros.metodoPago !== 'todos') params.append('metodo_pago', filtros.metodoPago);
-            if (filtros.tipoHospedaje !== 'todos') params.append('tipo_hospedaje', filtros.tipoHospedaje);
+            const filtrosReporte = {
+                fecha_inicio: filtros.fechaInicio || null,
+                fecha_fin: filtros.fechaFin || null,
+                metodo_pago: filtros.metodoPago !== 'todos' ? filtros.metodoPago : null,
+                tipo_hospedaje: filtros.tipoHospedaje !== 'todos' ? filtros.tipoHospedaje : null
+            };
 
-            const response = await fetch(`${config.API_URL}/reservas.php?reportes_ingresos&${params.toString()}`);
-            if (!response.ok) throw new Error('Error al cargar reportes');
+            const data = await reservaService.getReportesIngresos(filtrosReporte);
             
-            const data = await response.json();
-            if (data.success) {
+            if (data) {
                 // Datos de ingresos reales (por fecha de pago)
                 const reportesSrv = data.reportes || [];
                 setReportes(reportesSrv);

@@ -3,6 +3,7 @@ import { FaTimes, FaCalendar, FaMapMarkerAlt, FaPhone, FaIdCard, FaCar, FaUser, 
 import config from '../../../config';
 import { formatDate, formatDateTime, calcularNoches } from '../../../utils/dateUtils';
 import './ClienteModal.css';
+import reservaService from '../../../services/reservaService';
 
 const ClienteModal = ({ cliente, isOpen, onClose }) => {
     const [reservas, setReservas] = useState([]);
@@ -22,11 +23,7 @@ const ClienteModal = ({ cliente, isOpen, onClose }) => {
         setError(null);
         
         try {
-            const response = await fetch(`${config.API_URL}/reservas.php?cliente_id=${cliente.id}`);
-            
-            if (!response.ok) throw new Error('Error al cargar reservas');
-            
-            const data = await response.json();
+            const data = await reservaService.getReservasByCliente(cliente.id);
             setReservas(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error('Error:', error);

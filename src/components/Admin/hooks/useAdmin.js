@@ -3,6 +3,7 @@ import { CLIENTE_FIELDS, RESERVA_FIELDS } from '../../../constants/fields';
 import { notify } from '../Notifications/NotificationSystem';
 import config from '../../../config';
 import { useLocation } from 'react-router-dom';
+import reservaService from '../../../services/reservaService';
 
 const useAdmin = () => {
     const [clientes, setClientes] = useState([]);
@@ -98,53 +99,12 @@ const useAdmin = () => {
     const fetchReservas = async () => {
         try {
             console.log('🔄 Iniciando fetchReservas...');
-            console.log('🌐 API URL:', config.API_URL);
-            const timestamp = new Date().getTime();
-            const url = `${config.API_URL}/reservas.php?_t=${timestamp}`;
-            console.log('📡 URL completa:', url);
-            
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            console.log('📡 Response status:', response.status);
-            console.log('📡 Response headers:', response.headers);
-
-            // Verificar el Content-Type antes de parsear JSON
-            const contentType = response.headers.get('content-type');
-            if (!contentType || !contentType.includes('application/json')) {
-                const textResponse = await response.text();
-                console.error('❌ La respuesta no es JSON. Content-Type:', contentType);
-                console.error('❌ Respuesta recibida:', textResponse.substring(0, 500));
-                throw new Error(`El servidor devolvió un error. Verifica la URL de la API: ${config.API_URL}`);
-            }
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('❌ Error HTTP:', response.status, errorText);
-                throw new Error(`Error HTTP ${response.status}: ${errorText.substring(0, 200)}`);
-            }
-
-            const data = await response.json();
-            console.log('📊 Datos recibidos:', data);
-            console.log('📊 Cantidad de reservas:', Array.isArray(data) ? data.length : 'No es array');
-            
-            if (!Array.isArray(data)) {
-                console.error('❌ La respuesta no es un array:', data);
-                setError('Error en el formato de los datos');
-                return;
-            }
-
+            const data = await reservaService.fetchReservas();
             setReservas(data);
             setError(null);
             console.log('✅ Reservas actualizadas exitosamente');
         } catch (error) {
             console.error('❌ Error al cargar reservas:', error);
-            console.error('❌ URL que falló:', url);
             setError(`Error al cargar las reservas: ${error.message}`);
             setReservas([]);
         }
@@ -226,33 +186,14 @@ const useAdmin = () => {
             console.log('🔄 Iniciando handleCreateReserva...');
             console.log('📝 Datos de la reserva:', reservaData);
             
-            const response = await fetch(`${config.API_URL}/reservas.php`, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(reservaData)
-            });
-
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.message || 'Error al crear la reserva');
-            }
-
-            const responseData = await response.json();
-            console.log('✅ Reserva creada exitosamente:', responseData);
+            const responseData = await reservaService.createReserva(reservaData);
             
-            if (responseData.success && responseData.id) {
                 // Actualizar la lista de reservas y clientes (para actualizar total_reservas)
                 await fetchReservas();
                 await fetchClientes();
                 
                 notify.success(responseData.message || 'Reserva creada exitosamente');
                 return responseData;
-            } else {
-                throw new Error(responseData.message || 'Error al crear la reserva');
-            }
         } catch (error) {
             console.error('❌ Error al crear reserva:', error);
             notify.error(error.message || 'Error al crear la reserva');
@@ -265,24 +206,7 @@ const useAdmin = () => {
             console.log('🔄 Iniciando handleUpdateReserva...');
             console.log('📝 Datos de la reserva:', reservaData);
             
-            const response = await fetch(`${config.API_URL}/reservas.php`, {
-                method: 'PUT',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    id: id,
-                    ...reservaData
-                })
-            });
-
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.message || 'Error al actualizar la reserva');
-            }
-
-            console.log('✅ Reserva actualizada exitosamente');
+            await reservaService.updateReserva(id, reservaData);
             
             // Actualizar la lista de reservas
             await fetchReservas();
@@ -298,20 +222,7 @@ const useAdmin = () => {
 
     const handleDeleteReserva = async (id) => {
         try {
-            const response = await fetch(`${config.API_URL}/reservas.php?id=${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || `HTTP error! status: ${response.status}`);
-            }
-
+            await reservaService.deleteReserva(id);
             await fetchReservas();
             return true;
         } catch (error) {

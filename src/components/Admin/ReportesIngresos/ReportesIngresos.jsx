@@ -14,7 +14,8 @@ import {
     TablaReservas,
     SeccionReporte,
     SkeletonLoader,
-    GraficosReportes
+    GraficosReportes,
+    ResumenComparativo
 } from './components';
 import { formatearPrecio } from './utils';
 import './ReportesIngresos.css';
@@ -75,11 +76,17 @@ const ReportesIngresos = () => {
                 onExportar={exportarReporte}
             />
 
-            {/* SECCIÓN 1: INGRESOS REALES (Cash Flow) */}
+            {/* RESUMEN COMPARATIVO UNIFICADO */}
+            <ResumenComparativo 
+                estadisticas={estadisticas}
+                estadisticasPorReserva={estadisticasPorReserva}
+            />
+
+            {/* DETALLES: PAGOS RECIBIDOS (Cash Flow) */}
             <SeccionReporte
-                titulo="Ingresos Reales (Cash Flow)"
+                titulo="Detalle de Pagos Recibidos"
                 icono={<FaMoneyBillWave />}
-                descripcion="Dinero que realmente ingresó en el período seleccionado, basado en la fecha de pago. Muestra los pagos efectivamente recibidos en ese período."
+                descripcion="Lista detallada de todos los pagos que se recibieron en el período seleccionado, basado en la fecha de pago."
                 variante="seccion-ingresos-reales"
             >
                 {/* Estadísticas de Ingresos Reales */}
@@ -131,11 +138,11 @@ const ReportesIngresos = () => {
                 {loading ? <SkeletonLoader tipo="tabla" /> : <TablaPagos reportes={reportes} />}
             </SeccionReporte>
 
-            {/* SECCIÓN 2: INGRESOS POR PERÍODO DE RESERVA */}
+            {/* DETALLES: RESERVAS DEL PERÍODO */}
             <SeccionReporte
-                titulo="Ingresos por Período de Reserva"
+                titulo="Detalle de Reservas del Período"
                 icono={<FaCalendarAlt />}
-                descripcion="Reservas que corresponden al período seleccionado, basado en las fechas de entrada y salida. Muestra el monto total de cada reserva, independientemente de cuándo se pagó."
+                descripcion="Reservas que corresponden al período seleccionado, basado en las fechas de entrada y salida. Muestra el estado de pago de cada reserva."
                 variante="seccion-ingresos-reserva"
             >
                 {/* Estadísticas por Período de Reserva */}
@@ -148,12 +155,14 @@ const ReportesIngresos = () => {
                             valor={formatearPrecio(estadisticasPorReserva.totalIngresos)}
                             variante="estadistica-total"
                         />
-                        <EstadisticaCard
-                            icono={<FaCreditCard />}
-                            titulo="Total Pagado"
-                            valor={formatearPrecio(estadisticasPorReserva.totalPagado)}
-                            variante="estadistica-pagado"
-                        />
+                        {estadisticasPorReserva.totalPagadoEnPeriodo !== undefined && (
+                            <EstadisticaCard
+                                icono={<FaMoneyBillWave />}
+                                titulo="Total Pagado (en este período)"
+                                valor={formatearPrecio(estadisticasPorReserva.totalPagadoEnPeriodo)}
+                                variante="estadistica-pagado-periodo"
+                            />
+                        )}
                         <EstadisticaCard
                             icono={<FaCalendarAlt />}
                             titulo="Total Pendiente"

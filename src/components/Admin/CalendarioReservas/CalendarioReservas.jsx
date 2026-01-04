@@ -11,6 +11,7 @@ import esLocale from '@fullcalendar/core/locales/es';
 import { notify } from '../Notifications/NotificationSystem';
 import { parseLocalDate, formatDateForInput } from '../../../utils/dateUtils';
 import './CalendarioReservas.css';
+import reservaService from '../../../services/reservaService';
 
 const CalendarioReservas = ({ reservas = [], onRefresh, onDeleteReserva, onUpdateReserva }) => {
     const [selectedReserva, setSelectedReserva] = useState(null);
@@ -90,17 +91,7 @@ const CalendarioReservas = ({ reservas = [], onRefresh, onDeleteReserva, onUpdat
         if (!selectedReserva) return;
 
         try {
-            const response = await fetch(`${config.API_URL}/reservas.php?id=${selectedReserva.id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    estado: nuevoEstado
-                })
-            });
-
-            if (!response.ok) throw new Error('Error al actualizar el estado');
+            await reservaService.updateEstadoReserva(selectedReserva.id, nuevoEstado);
             
             notify.success(`Estado de reserva actualizado a ${nuevoEstado}`);
             await refreshData();

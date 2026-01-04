@@ -8,6 +8,7 @@ import { notify } from '../Notifications/NotificationSystem';
 import EditarReservaModal from './EditarReservaModal';
 import ResumenPagos from './ResumenPagos';
 import { formatDate, calcularNoches } from '../../../utils/dateUtils';
+import reservaService from '../../../services/reservaService';
 
 const ReservasList = ({ reservas: initialReservas, onDelete, onAddNew, onRefresh, onUpdate }) => {
     const [reservas, setReservas] = useState(initialReservas);
@@ -17,6 +18,10 @@ const ReservasList = ({ reservas: initialReservas, onDelete, onAddNew, onRefresh
     const [sortField, setSortField] = useState('fecha_entrada');
     const [sortDirection, setSortDirection] = useState('desc');
     const [tipoHospedajeFilter, setTipoHospedajeFilter] = useState('todos');
+    const [filtroPagoPendiente, setFiltroPagoPendiente] = useState('todos'); // 'todos', 'pendientes', 'completas'
+    const [fechaInicio, setFechaInicio] = useState('');
+    const [fechaFin, setFechaFin] = useState('');
+    const [mesSeleccionado, setMesSeleccionado] = useState('');
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const [selectedReserva, setSelectedReserva] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -76,14 +81,11 @@ const ReservasList = ({ reservas: initialReservas, onDelete, onAddNew, onRefresh
             
             setIsSearching(true);
             try {
-                console.log('🔍 Buscando reservas con URL:', `${config.API_URL}/reservas.php?search=${encodeURIComponent(value)}`);
-                const response = await fetch(`${config.API_URL}/reservas.php?search=${encodeURIComponent(value)}`);
-                console.log('🔍 Respuesta de la API:', response.status, response.statusText);
+                console.log('🔍 Buscando reservas con término:', value);
+                const data = await reservaService.searchReservas(value);
                 
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('🔍 Error en la respuesta:', errorText);
-                    // Fallback a búsqueda local si la API falla
+                // Si no hay resultados de la API, intentar búsqueda local como fallback
+                if (!data || data.length === 0) {
                     console.log('🔄 Usando búsqueda local como fallback...');
                     const searchTermLower = value.toLowerCase();
                     const filtered = initialReservas.filter(reserva => 
@@ -97,10 +99,9 @@ const ReservasList = ({ reservas: initialReservas, onDelete, onAddNew, onRefresh
                     if (filtered.length === 0 && shouldShowNotification) {
                         notify.info('No se encontraron reservas con ese criterio de búsqueda');
                     }
+                    setIsSearching(false);
                     return;
                 }
-                
-                const data = await response.json();
                 console.log('🔍 Datos recibidos:', data);
                 
                 // Verificar si los datos de la API son problemáticos
@@ -226,8 +227,115 @@ const ReservasList = ({ reservas: initialReservas, onDelete, onAddNew, onRefresh
         notify.info(`Filtrando por tipo de hospedaje: ${tipo === 'todos' ? 'Todos' : tipo}`);
     };
 
+    const handleFiltroPagoPendiente = (filtro) => {
+        setFiltroPagoPendiente(filtro);
+        const mensajes = {
+            'todos': 'Mostrando todas las reservas',
+            'pendientes': 'Mostrando solo reservas con pagos pendientes',
+            'completas': 'Mostrando solo reservas completamente pagadas'
+        };
+        notify.info(mensajes[filtro]);
+    };
+
+    const handleFechaInicioChange = (fecha) => {
+        setFechaInicio(fecha);
+        setMesSeleccionado(''); // Limpiar mes si se cambia fecha manualmente
+    };
+
+    const handleFechaFinChange = (fecha) => {
+        setFechaFin(fecha);
+        setMesSeleccionado(''); // Limpiar mes si se cambia fecha manualmente
+    };
+
+    const handleMesChange = (mesAnio) => {
+        setMesSeleccionado(mesAnio);
+        
+        if (mesAnio) {
+            // Formato esperado: "YYYY-MM" (ej: "2024-12")
+            const [anio, mes] = mesAnio.split('-');
+            
+            // Primer día del mes
+            const primerDia = `${anio}-${mes}-01`;
+            
+            // Último día del mes
+            const mesNum = parseInt(mes);
+            const ultimoDia = new Date(parseInt(anio), mesNum, 0);
+            const ultimoDiaStr = `${anio}-${mes}-${String(ultimoDia.getDate()).padStart(2, '0')}`;
+            
+            setFechaInicio(primerDia);
+            setFechaFin(ultimoDiaStr);
+        } else {
+            // Si se limpia el mes, también limpiar las fechas
+            setFechaInicio('');
+            setFechaFin('');
+        }
+    };
+
+    const limpiarFiltrosFecha = () => {
+        setFechaInicio('');
+        setFechaFin('');
+        setMesSeleccionado('');
+    };
+
+    // Función helper para determinar si una reserva tiene pagos pendientes
+    const tienePagosPendientes = (reserva) => {
+        const estadoPago = reserva.estado_pago || 'pendiente';
+        const totalPagado = parseFloat(reserva.total_pagado || 0);
+        const montoTotalNum = parseFloat(reserva.monto_total || 0);
+        const descuentoValue = parseFloat(reserva.descuento || 0);
+        
+        // Calcular monto total real (misma lógica que getEstadoPago)
+        let montoTotalReal = montoTotalNum;
+        if (descuentoValue > 0) {
+            const esReservaNueva = montoTotalNum >= descuentoValue;
+            if (!esReservaNueva) {
+                montoTotalReal = montoTotalNum + descuentoValue;
+            }
+        }
+        
+        const faltaPagar = montoTotalReal - totalPagado;
+        return faltaPagar > 0.01; // Tolerancia para errores de redondeo
+    };
+
     const filteredReservas = reservas.filter(reserva => {
-        return tipoHospedajeFilter === 'todos' || reserva.tipo_hospedaje === tipoHospedajeFilter;
+        // Filtro por tipo de hospedaje
+        const pasaFiltroTipo = tipoHospedajeFilter === 'todos' || reserva.tipo_hospedaje === tipoHospedajeFilter;
+        
+        // Filtro por estado de pago
+        let pasaFiltroPago = true;
+        if (filtroPagoPendiente === 'pendientes') {
+            pasaFiltroPago = tienePagosPendientes(reserva);
+        } else if (filtroPagoPendiente === 'completas') {
+            pasaFiltroPago = !tienePagosPendientes(reserva);
+        }
+        
+        // Filtro por fechas (basado en fecha_entrada de la reserva)
+        let pasaFiltroFecha = true;
+        if (fechaInicio || fechaFin) {
+            const fechaEntrada = new Date(reserva.fecha_entrada);
+            fechaEntrada.setHours(0, 0, 0, 0); // Normalizar a inicio del día
+            
+            if (fechaInicio && fechaFin) {
+                // Rango de fechas: la reserva debe estar dentro del rango
+                const inicio = new Date(fechaInicio);
+                inicio.setHours(0, 0, 0, 0);
+                const fin = new Date(fechaFin);
+                fin.setHours(23, 59, 59, 999); // Incluir todo el día final
+                pasaFiltroFecha = fechaEntrada >= inicio && fechaEntrada <= fin;
+            } else if (fechaInicio) {
+                // Solo fecha inicio: la reserva debe ser desde esa fecha en adelante
+                const inicio = new Date(fechaInicio);
+                inicio.setHours(0, 0, 0, 0);
+                pasaFiltroFecha = fechaEntrada >= inicio;
+            } else if (fechaFin) {
+                // Solo fecha fin: la reserva debe ser hasta esa fecha
+                const fin = new Date(fechaFin);
+                fin.setHours(23, 59, 59, 999);
+                pasaFiltroFecha = fechaEntrada <= fin;
+            }
+        }
+        
+        return pasaFiltroTipo && pasaFiltroPago && pasaFiltroFecha;
     });
 
     const totalPages = Math.ceil(filteredReservas.length / itemsPerPage);
@@ -541,6 +649,57 @@ const ReservasList = ({ reservas: initialReservas, onDelete, onAddNew, onRefresh
                             <option value="dormis">Dormis</option>
                             <option value="camping">Camping</option>
                         </select>
+                        <select 
+                            value={filtroPagoPendiente} 
+                            onChange={(e) => handleFiltroPagoPendiente(e.target.value)}
+                            className="filter-select"
+                            title="Filtrar por estado de pago"
+                        >
+                            <option value="todos">Todas las reservas</option>
+                            <option value="pendientes">💰 Con pagos pendientes</option>
+                            <option value="completas">✅ Completamente pagadas</option>
+                        </select>
+                    </div>
+                    <div className="filtros-fecha-container">
+                        <div className="filtro-fecha-grupo">
+                            <label>Seleccionar Mes:</label>
+                            <input
+                                type="month"
+                                value={mesSeleccionado}
+                                onChange={(e) => handleMesChange(e.target.value)}
+                                className="filtro-input-fecha"
+                                placeholder="Seleccionar mes"
+                            />
+                            <small className="filtro-hint-fecha">Opcional: Selecciona un mes completo</small>
+                        </div>
+                        <div className="filtro-fecha-grupo">
+                            <label>Fecha Inicio:</label>
+                            <input
+                                type="date"
+                                value={fechaInicio}
+                                onChange={(e) => handleFechaInicioChange(e.target.value)}
+                                className="filtro-input-fecha"
+                            />
+                        </div>
+                        <div className="filtro-fecha-grupo">
+                            <label>Fecha Fin:</label>
+                            <input
+                                type="date"
+                                value={fechaFin}
+                                onChange={(e) => handleFechaFinChange(e.target.value)}
+                                className="filtro-input-fecha"
+                                min={fechaInicio || undefined}
+                            />
+                        </div>
+                        {(fechaInicio || fechaFin || mesSeleccionado) && (
+                            <button 
+                                onClick={limpiarFiltrosFecha}
+                                className="btn-limpiar-fecha"
+                                title="Limpiar filtros de fecha"
+                            >
+                                ✕ Limpiar fechas
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

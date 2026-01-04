@@ -29,19 +29,6 @@ const DatosReserva = ({
                         name="fecha_entrada"
                         value={formData.fecha_entrada}
                         onChange={handleInputChange}
-                        min={(() => {
-                            const now = new Date();
-                            const horaActual = now.getHours();
-                            const fechaMinima = new Date();
-                            fechaMinima.setHours(0, 0, 0, 0);
-                            // Permitir hasta 2 días anteriores como mínimo
-                            fechaMinima.setDate(fechaMinima.getDate() - 2);
-                            // Si es antes de las 6:00am, permitir un día adicional (hasta 3 días anteriores)
-                            if (horaActual < 6) {
-                                fechaMinima.setDate(fechaMinima.getDate() - 1);
-                            }
-                            return fechaMinima.toISOString().split('T')[0];
-                        })()}
                         required
                     />
                 </div>
@@ -52,7 +39,7 @@ const DatosReserva = ({
                         name="fecha_salida"
                         value={formData.fecha_salida}
                         onChange={handleInputChange}
-                        min={formData.fecha_entrada || new Date().toISOString().split('T')[0]}
+                        min={formData.fecha_entrada || ''}
                         required
                     />
                     {cantidadNoches !== null && cantidadNoches > 0 && (

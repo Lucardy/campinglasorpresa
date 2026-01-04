@@ -201,6 +201,73 @@
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
+/* Estilos para filtros de fecha */
+.filtros-fecha-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end;
+    margin-top: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e1e5e9;
+}
+
+.filtro-fecha-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 150px;
+}
+
+.filtro-fecha-grupo label {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.9rem;
+}
+
+.filtro-input-fecha {
+    padding: 10px;
+    border: 2px solid #e1e5e9;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.filtro-input-fecha:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.filtro-hint-fecha {
+    color: #6c757d;
+    font-size: 0.75rem;
+    font-style: italic;
+    margin-top: 2px;
+}
+
+.btn-limpiar-fecha {
+    padding: 10px 15px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: fit-content;
+    white-space: nowrap;
+}
+
+.btn-limpiar-fecha:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .table-container {
     overflow-x: auto;
     border-radius: 8px;

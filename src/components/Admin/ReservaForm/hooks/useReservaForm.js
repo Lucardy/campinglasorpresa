@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { notify } from '../../Notifications/NotificationSystem';
 import config from '../../../../config';
+import useHospedajes from '../../../../hooks/useHospedajes';
 
 const useReservaForm = (clientesExternos = []) => {
     const [formData, setFormData] = useState({
@@ -15,8 +16,17 @@ const useReservaForm = (clientesExternos = []) => {
         metodo_pago: 'efectivo'
     });
 
-    const [hospedajes, setHospedajes] = useState([]);
-    const [tiposHospedaje, setTiposHospedaje] = useState([]);
+    // Hook compartido para hospedajes
+    const {
+        tiposHospedaje,
+        hospedajes,
+        hospedajesDisponibles,
+        loading: loadingHospedajes,
+        fetchTiposHospedaje: fetchTiposHospedajeHook,
+        fetchHospedajesDisponibles: fetchHospedajesDisponiblesHook,
+        setHospedajes
+    } = useHospedajes();
+
     const [tipoHospedajeSeleccionado, setTipoHospedajeSeleccionado] = useState('');
     const [tipoHospedajeNombre, setTipoHospedajeNombre] = useState('');
     const [loading, setLoading] = useState(false);
@@ -32,8 +42,8 @@ const useReservaForm = (clientesExternos = []) => {
 
     // Cargar tipos de hospedaje al montar el componente
     useEffect(() => {
-        fetchTiposHospedaje();
-    }, []);
+        fetchTiposHospedajeHook();
+    }, [fetchTiposHospedajeHook]);
 
     // Actualizar clientes cuando cambian los clientes externos
     useEffect(() => {
@@ -50,9 +60,14 @@ const useReservaForm = (clientesExternos = []) => {
     // Cargar hospedajes disponibles cuando cambian las fechas y el tipo
     useEffect(() => {
         if (formData.fecha_entrada && formData.fecha_salida && tipoHospedajeSeleccionado && tipoHospedajeSeleccionado !== '') {
-            fetchHospedajesDisponibles();
+            fetchHospedajesDisponiblesHook(
+                tipoHospedajeSeleccionado,
+                formData.fecha_entrada,
+                formData.fecha_salida,
+                { useDisponibilidadEndpoint: false }
+            );
         }
-    }, [formData.fecha_entrada, formData.fecha_salida, tipoHospedajeSeleccionado]);
+    }, [formData.fecha_entrada, formData.fecha_salida, tipoHospedajeSeleccionado, fetchHospedajesDisponiblesHook]);
 
     // Verificar disponibilidad cuando cambia el hospedaje seleccionado
     useEffect(() => {
@@ -94,26 +109,6 @@ const useReservaForm = (clientesExternos = []) => {
         actualizarPrecio();
     }, [tipoHospedajeSeleccionado, formData.cantidad_personas, formData.fecha_entrada, formData.fecha_salida, setFormData, notify, config.API_URL]);
 
-    const fetchTiposHospedaje = async () => {
-        try {
-            setError(null);
-            setLoading(true);
-            const response = await fetch(`${config.API_URL}/hospedajes.php?tipos`);
-            if (!response.ok) throw new Error('Error al cargar tipos de hospedaje');
-            const data = await response.json();
-            if (data.success && Array.isArray(data.tipos)) {
-                setTiposHospedaje(data.tipos);
-            } else {
-                throw new Error('Formato de respuesta inválido');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            setError('Error al cargar tipos de hospedaje');
-            notify.error('Error al cargar tipos de hospedaje');
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const fetchFechasOcupadas = async () => {
         try {
@@ -128,51 +123,6 @@ const useReservaForm = (clientesExternos = []) => {
         }
     };
 
-    const fetchHospedajesDisponibles = async (tipoHospedajeId = null) => {
-        try {
-            setError(null);
-            setLoading(true);
-            
-            const tipoId = tipoHospedajeId || tipoHospedajeSeleccionado;
-            
-            if (!tipoId) {
-                console.log('Falta el tipo de hospedaje');
-                return;
-            }
-
-            if (!formData.fecha_entrada || !formData.fecha_salida) {
-                console.log('Faltan las fechas');
-                return;
-            }
-
-            const url = `${config.API_URL}/hospedajes.php?tipo_hospedaje_id=${tipoId}&fecha_entrada=${formData.fecha_entrada}&fecha_salida=${formData.fecha_salida}`;
-            console.log('URL de búsqueda:', url);
-
-            const response = await fetch(url);
-            const data = await response.json();
-            
-            if (!response.ok) {
-                console.error('Error en la respuesta:', data);
-                throw new Error(data.message || 'Error al cargar hospedajes');
-            }
-            
-            console.log('Respuesta del servidor:', data);
-
-            if (!data.success) {
-                throw new Error(data.message || 'Error al cargar hospedajes');
-            }
-
-            setHospedajes(data.hospedajes || []);
-            setError(null);
-        } catch (error) {
-            console.error('Error:', error);
-            setError(error.message || 'Error al cargar hospedajes disponibles');
-            notify.error(error.message || 'Error al cargar hospedajes disponibles');
-            setHospedajes([]);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const verificarDisponibilidad = async () => {
         try {
@@ -221,7 +171,12 @@ const useReservaForm = (clientesExternos = []) => {
                 fecha_entrada: formData.fecha_entrada,
                 fecha_salida: formData.fecha_salida
             });
-            fetchHospedajesDisponibles(value);
+            fetchHospedajesDisponiblesHook(
+                value,
+                formData.fecha_entrada,
+                formData.fecha_salida,
+                { useDisponibilidadEndpoint: false }
+            );
         }
     };
 
@@ -307,34 +262,11 @@ const useReservaForm = (clientesExternos = []) => {
             console.log('Datos a enviar al backend:', datosAEnviar);
             console.log('Cliente seleccionado:', selectedCliente);
             console.log('Tipo de hospedaje:', tipoHospedajeNombre);
-            console.log('URL de la API:', `${config.API_URL}/reservas.php`);
-
-            const response = await fetch(`${config.API_URL}/reservas.php`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(datosAEnviar)
-            });
-
-            console.log('Status de la respuesta:', response.status);
+            console.log('Creando reserva con datos:', datosAEnviar);
             
-            let data;
-            try {
-                const responseText = await response.text();
-                console.log('Respuesta raw del backend:', responseText);
-                
-                if (responseText.trim()) {
-                    data = JSON.parse(responseText);
-                } else {
-                    throw new Error('Respuesta vacía del servidor');
-                }
-            } catch (parseError) {
-                console.error('Error al parsear respuesta:', parseError);
-                throw new Error('Error al procesar la respuesta del servidor');
-            }
+            const data = await reservaService.createReserva(datosAEnviar);
             
-            console.log('Respuesta parseada del backend:', data);
+            console.log('Respuesta del backend:', data);
             
             if (data.success && data.id) {
                 notify.success(data.message || 'Reserva creada exitosamente');
